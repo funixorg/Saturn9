@@ -18,7 +18,8 @@ struct limine_framebuffer *framebuffer;
 unsigned xpos=0;
 unsigned ypos=0;
 unsigned background;
-
+unsigned foreground;
+unsigned font_size;
 
 
 void draw_pixel(unsigned x, unsigned y, unsigned color) {
@@ -64,7 +65,7 @@ void putchar(char character, unsigned color, unsigned scale) {
     }
 
     if (start_x + font_width * scale >= screen_width) {
-        xpos = 1;
+        xpos = 0;
         ypos += 2;
         start_x = xpos * (font_width * scale);
         start_y = ypos * (font_height * scale);
@@ -139,6 +140,23 @@ void set_background(unsigned value) {
 unsigned get_background() {
     return background;
 }
+
+void set_foreground(unsigned value) {
+    foreground=value;
+}
+
+unsigned get_foreground() {
+    return foreground;
+}
+
+void set_fontsize(unsigned value) {
+    font_size=value;
+}
+
+unsigned get_fontsize() {
+    return font_size;
+}
+
 
 void printstr(const char* string, unsigned color, unsigned scale) {
     char modifiedString[2048];

@@ -19,6 +19,10 @@ unsigned get_x_offset();
 unsigned get_y_offset();
 void set_background(unsigned value);
 unsigned get_background();
+void set_foreground(unsigned value);
+unsigned get_foreground();
+void set_fontsize(unsigned value);
+unsigned get_fontsize();
 
 void printstr(const char* string, unsigned color, unsigned scale);
 void print_at(const char* string, unsigned x, unsigned y, unsigned color, unsigned scale);

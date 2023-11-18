@@ -1,5 +1,8 @@
 #include <mem.h>
 
+static char memory_pool[MEMORY_POOL_SIZE];
+static char *memory_pool_ptr = memory_pool;
+
 void *memcpy(void *dest, const void *src, size_t n) {
     uint8_t *pdest = (uint8_t *)dest;
     const uint8_t *psrc = (const uint8_t *)src;
@@ -52,4 +55,18 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     }
 
     return 0;
+}
+
+void *memalloc(size_t size) {
+    if (memory_pool_ptr + size <= memory_pool + MEMORY_POOL_SIZE) {
+        void *allocation = memory_pool_ptr;
+        memory_pool_ptr += size;
+        return allocation;
+    } else {
+        return NULL;
+    }
+}
+
+void memalloc_reset() {
+    memory_pool_ptr = memory_pool;
 }

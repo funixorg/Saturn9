@@ -11,4 +11,4 @@ QEMUFLAGS:list[str] = [
 ]
 
 def qemu():
-    
+    pass

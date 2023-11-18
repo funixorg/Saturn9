@@ -5,18 +5,24 @@ else
 	CURRENT_DIR := $(shell pwd)
 endif
 
-all: dockerrun
+ifeq ($(OS),Windows_NT)
+	PYTHON := python
+else
+	PYTHON := python3
+endif
+
+all: docker
 
 build:
 	python3 -u scripts/build.py
 
 docker:
 	docker build -t saturn9-env .
-
-dockerrun:
-	docker run -it --rm -v "$(CURRENT_DIR)/bin:/usr/src/saturn9/bin/" saturn9-env
+	docker run -it --rm -v "$(CURRENT_DIR)/bin:/usr/src/saturn9/bin/" -v "$(CURRENT_DIR)/isodir:/usr/src/saturn9/isodir/" saturn9-env
 
 run:
-	python3 -u scripts/run.py
+	$(PYTHON) -u scripts/run.py
 
-buildrun: build run
+buildrun: 
+	make docker
+	make run

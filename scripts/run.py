@@ -1,14 +1,8 @@
-from configuration import ISO_OUTPUT
-from os import name as _osname
+from configuration import ISO_OUTPUT, QEMU, QEMUFLAGS
+from os import system as _sys
 
-QEMU = ("qemu-system-x86_64.exe" if _osname == "nt" else "qemu-system-x86_64")
-QEMUFLAGS:list[str] = [
-    "-cdrom", f"{ISO_OUTPUT}",
-    "-m 256", ('-L "C:\Program Files\qemu"' if _osname == "nt" else ""),
-    "-no-reboot",
-    "-no-shutdown",
-    "-d", "int"
-]
+def qemu()->None:
+    _sys(f"{QEMU} {' '.join(QEMUFLAGS)} -cdrom {ISO_OUTPUT}")
 
-def qemu():
-    pass
+if __name__ == "__main__":
+    qemu()

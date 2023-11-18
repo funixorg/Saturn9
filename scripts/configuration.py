@@ -1,13 +1,20 @@
+from os import name as _osname
+
 SRCPATH="saturn9/"
 LINKSCRIPT=SRCPATH+"cfg/linker.ld"
 LIMINE_CONF = SRCPATH+"cfg/limine.cfg"
 LIMINE_DIR = SRCPATH+"limine/"
-INCLUDE_DIRS = [LIMINE_DIR, SRCPATH+"fs/include/", SRCPATH+"mem/include/"]
+INCLUDE_DIRS = [
+    LIMINE_DIR,
+    SRCPATH+"fs/include/",
+    SRCPATH+"mem/include/",
+    SRCPATH+"graphics/include/",
+    SRCPATH+"common/include/",
+]
 
 CXX = "x86_64-linux-gnu-gcc"
 CXXFLAGS = [
     "-Wall",
-    "-Wextra",
     "-std=gnu11",
     "-ffreestanding",
     "-fno-stack-protector",
@@ -54,4 +61,12 @@ XISOFLAGS = [
     "--protective-msdos-label",
     f"{ISODIR}",
     f"-o {ISO_OUTPUT}"
+]
+
+QEMU = ("qemu-system-x86_64.exe" if _osname == "nt" else "qemu-system-x86_64")
+QEMUFLAGS:list[str] = [
+    "-m 256",
+    ('-L "C:\Program Files\qemu"' if _osname == "nt" else ""),
+    "-no-reboot",
+    "-no-shutdown",
 ]

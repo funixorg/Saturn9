@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "stdint.h": "c",
+        "graphics.h": "c",
+        "limine.h": "c",
+        "common.h": "c",
+        "stddef.h": "c",
+        "stdbool.h": "c"
+    }
+}

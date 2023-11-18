@@ -22,7 +22,7 @@
 <h4 align="center">In Implementation Order</h4>
 
 - [x] Limine bootloader
-- [ ] VBE Graphics
+- [x] VBE Graphics
 - [ ] Interrupts
 - [ ] PS/2 Keyboard
 - [ ] GDT
@@ -37,3 +37,4 @@
 
 <h1 align="center">Preview</h1>
 
+![Reference screenshot](asets/s9screen.png)

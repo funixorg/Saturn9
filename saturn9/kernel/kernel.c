@@ -7,14 +7,13 @@
 void _start(void) {
     framebuffer_init();
 
-    set_background(0x000000);
-    set_foreground(0xffff);
+    set_background(0x0e0e0e);
+    set_foreground(0x3c3c3c);
     set_fontsize(2);
 
     draw_screen(get_background());
-    //printstr("Hello World!", 0xfffff, 2);
     char *name = "Unity";
-    char *name1 = "Github";
-    printf("Hello %s\nHello %s", name, name1);
+    int hex = 0xfff2a;
+    printf("Hello #{0x55555}%s #{0xfffff}${0xff0000}%x\n", name, hex);
     hcf();
 }

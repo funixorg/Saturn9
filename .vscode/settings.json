@@ -5,6 +5,9 @@
         "limine.h": "c",
         "common.h": "c",
         "stddef.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "chrono": "c",
+        "filesystem": "c",
+        "format": "c"
     }
 }

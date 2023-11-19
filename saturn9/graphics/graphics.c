@@ -27,6 +27,14 @@ void draw_pixel(unsigned x, unsigned y, unsigned color) {
     fb_ptr[y * (framebuffer->pitch / 4) + x] = color;
 }
 
+void draw_rectangle(unsigned x, unsigned y, unsigned width, unsigned height, unsigned color) {
+    for (unsigned i = 0; i < height; ++i) {
+        for (unsigned j = 0; j < width; ++j) {
+            draw_pixel(x + j, y + i, color);
+        }
+    }
+}
+
 void draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned scale) {
     unsigned char_width = font_width * scale;
     unsigned char_height = font_height * scale;
@@ -39,6 +47,8 @@ void draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned 
         y++;
         return;
     }
+
+    draw_rectangle(start_x, start_y, font_width*scale, font_height*scale, get_background());
 
     for (int i = 0; i < font_height; ++i) {
         for (int j = 0; j < font_width; ++j) {
@@ -70,6 +80,8 @@ void putchar(char character, unsigned color, unsigned scale) {
         start_x = xpos * (font_width * scale);
         start_y = ypos * (font_height * scale);
     }
+
+    draw_rectangle(start_x, start_y, font_width*scale, font_height*scale, get_background());
 
     for (int i = 0; i < font_height; ++i) {
         for (int j = 0; j < font_width; ++j) {

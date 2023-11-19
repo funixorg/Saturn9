@@ -52,13 +52,46 @@ char* chtostr(char c) {
     return str;
 }
 
+int atoi(const char *str) {
+    int result = 0;
+
+    if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X')) {
+        str += 2;
+    }
+
+    while (*str != '\0') {
+        char digit = *str;
+        int value;
+
+        if (digit >= '0' && digit <= '9') {
+            value = digit - '0';
+        } else if (digit >= 'a' && digit <= 'f') {
+            value = 10 + digit - 'a';
+        } else if (digit >= 'A' && digit <= 'F') {
+            value = 10 + digit - 'A';
+        } else {
+            break;
+        }
+
+        result = result * 16 + value;
+        ++str;
+    }
+
+    return result;
+}
+
 void printf(const char *format, ...) {
+    unsigned fg = get_foreground();
+    unsigned bg = get_background();
+
     va_list args;
     va_start(args, format);
 
+    char cvalue[128];
+
     while (*format != '\0') {
         if (*format == '%') {
-            format++; // Move past '%'
+            format++;
 
             switch (*format) {
                 case 'd': {
@@ -73,9 +106,50 @@ void printf(const char *format, ...) {
                     printstr(str, get_foreground(), get_fontsize());
                     break;
                 }
+                case 'x': {
+                    int value = va_arg(args, int);
+                    char buffer[128];
+                    itoa(value, buffer, 16);
+                    printstr("0x", get_foreground(), get_fontsize());
+                    printstr(buffer, get_foreground(), get_fontsize());
+                    break;
+                }
                 default:
                     putchar('%', get_foreground(), get_fontsize());
                     printstr(chtostr(*format), get_foreground(), get_fontsize());
+            }
+        } else if (*format == '#') {
+            format++;
+            if (*format == '{') {
+                format++;
+                int i = 0;
+
+                while (*format && *format != '}') {
+                    cvalue[i++] = *format;
+                    format++;
+                }
+
+                cvalue[i] = '\0';
+                set_foreground(atoi(cvalue));
+            } else {
+                putchar('#', get_foreground(), get_fontsize());
+                printstr(chtostr(*format), get_foreground(), get_fontsize());
+            }
+        } else if (*format == '$') {
+            format++;
+            if (*format == '{') {
+                format++;
+                int i = 0;
+
+                while (*format && *format != '}') {
+                    cvalue[i++] = *format;
+                    format++;
+                }
+                cvalue[i] = '\0';
+                set_background(atoi(cvalue));
+            } else {
+                putchar('#', get_foreground(), get_fontsize());
+                printstr(chtostr(*format), get_foreground(), get_fontsize());
             }
         } else {
             printstr(chtostr(*format), get_foreground(), get_fontsize());
@@ -85,4 +159,7 @@ void printf(const char *format, ...) {
     }
 
     va_end(args);
+
+    set_foreground(fg);
+    set_background(bg);
 }

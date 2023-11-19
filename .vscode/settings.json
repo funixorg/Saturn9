@@ -8,6 +8,13 @@
         "stdbool.h": "c",
         "chrono": "c",
         "filesystem": "c",
-        "format": "c"
-    }
+        "format": "c",
+        "exceptions.h": "c",
+        "stdlib.h": "c",
+        "syscalls.h": "c",
+        "keyboardlayouts.h": "c",
+        "serial.h": "c",
+        "stdio.h": "c"
+    },
+    "C_Cpp.errorSquiggles": "enabled"
 }

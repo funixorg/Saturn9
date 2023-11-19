@@ -10,11 +10,15 @@ INCLUDE_DIRS = [
     SRCPATH+"mem/include/",
     SRCPATH+"graphics/include/",
     SRCPATH+"common/include/",
+    SRCPATH+"interrupts/include/",
+    SRCPATH+"ports/include/",
+    SRCPATH+"layouts/"
 ]
 
 CXX = "x86_64-linux-gnu-gcc"
 CXXFLAGS = [
     "-Wall",
+    "-Wno-char-subscripts",
     "-std=gnu11",
     "-ffreestanding",
     "-fno-stack-protector",
@@ -37,9 +41,8 @@ LDFLAGS = [
     "-m elf_x86_64",
     "-nostdlib",
     "-static",
-    "-pie",
     "--no-dynamic-linker",
-    "-z text",
+    "-z notext",
     "-z max-page-size=0x1000",
     f"-T {LINKSCRIPT}"
 ]
@@ -69,4 +72,9 @@ QEMUFLAGS:list[str] = [
     ('-L "C:\Program Files\qemu"' if _osname == "nt" else ""),
     "-no-reboot",
     "-no-shutdown",
+    "-serial stdio",
+    "-d int",
+    "-D qemu_log.txt",
+    "-pflash scripts/OVMF.fd" 
 ]
+

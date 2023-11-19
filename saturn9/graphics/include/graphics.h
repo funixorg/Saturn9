@@ -9,6 +9,7 @@ extern struct limine_framebuffer_request framebuffer_request;
 
 void draw_pixel(unsigned x, unsigned y, unsigned color);
 void draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned scale);
+void delete_last();
 void putchar(char character, unsigned color, unsigned scale);
 void draw_screen(unsigned color);
 void framebuffer_init();

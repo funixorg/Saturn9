@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <graphics.h>
 #include <stdarg.h>
+#include <stddef.h>
 #include <mem.h>
 
 
@@ -80,86 +81,9 @@ int atoi(const char *str) {
     return result;
 }
 
-void printf(const char *format, ...) {
-    unsigned fg = get_foreground();
-    unsigned bg = get_background();
+size_t strlen(const char *str) {
+    size_t i;
 
-    va_list args;
-    va_start(args, format);
-
-    char cvalue[128];
-
-    while (*format != '\0') {
-        if (*format == '%') {
-            format++;
-
-            switch (*format) {
-                case 'd': {
-                    int value = va_arg(args, int);
-                    char buffer[128];
-                    itoa(value, buffer, 10);
-                    printstr(buffer, get_foreground(), get_fontsize());
-                    break;
-                }
-                case 's': {
-                    const char *str = va_arg(args, const char *);
-                    printstr(str, get_foreground(), get_fontsize());
-                    break;
-                }
-                case 'x': {
-                    int value = va_arg(args, int);
-                    char buffer[128];
-                    itoa(value, buffer, 16);
-                    printstr("0x", get_foreground(), get_fontsize());
-                    printstr(buffer, get_foreground(), get_fontsize());
-                    break;
-                }
-                default:
-                    putchar('%', get_foreground(), get_fontsize());
-                    printstr(chtostr(*format), get_foreground(), get_fontsize());
-            }
-        } else if (*format == '#') {
-            format++;
-            if (*format == '{') {
-                format++;
-                int i = 0;
-
-                while (*format && *format != '}') {
-                    cvalue[i++] = *format;
-                    format++;
-                }
-
-                cvalue[i] = '\0';
-                set_foreground(atoi(cvalue));
-            } else {
-                putchar('#', get_foreground(), get_fontsize());
-                printstr(chtostr(*format), get_foreground(), get_fontsize());
-            }
-        } else if (*format == '$') {
-            format++;
-            if (*format == '{') {
-                format++;
-                int i = 0;
-
-                while (*format && *format != '}') {
-                    cvalue[i++] = *format;
-                    format++;
-                }
-                cvalue[i] = '\0';
-                set_background(atoi(cvalue));
-            } else {
-                putchar('#', get_foreground(), get_fontsize());
-                printstr(chtostr(*format), get_foreground(), get_fontsize());
-            }
-        } else {
-            printstr(chtostr(*format), get_foreground(), get_fontsize());
-        }
-
-        format++;
-    }
-
-    va_end(args);
-
-    set_foreground(fg);
-    set_background(bg);
+    for (i = 0; str[i]; i++);
+    return i;
 }

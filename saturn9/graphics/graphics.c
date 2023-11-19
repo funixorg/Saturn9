@@ -63,6 +63,19 @@ void draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned 
     }
 }
 
+void delete_last() {
+    xpos--;
+
+    unsigned start_x = xpos * (font_width * get_fontsize());
+    unsigned start_y = ypos * (font_height * get_fontsize());
+
+    for (int i = 0; i < font_height * get_fontsize(); ++i) {
+        for (int j = 0; j < font_width * get_fontsize(); ++j) {
+            draw_pixel(start_x + j, start_y + i, get_background());
+        }
+    }
+}
+
 void putchar(char character, unsigned color, unsigned scale) {
     unsigned start_x = xpos * (font_width * scale);
     unsigned start_y = ypos * (font_height * scale);
@@ -72,6 +85,11 @@ void putchar(char character, unsigned color, unsigned scale) {
         xpos = 0;
         ypos += 2;
         return;
+    }
+
+    if (character == '\b') {
+      delete_last();
+      return;
     }
 
     if (start_x + font_width * scale >= screen_width) {

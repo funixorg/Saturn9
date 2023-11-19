@@ -7,5 +7,6 @@ void printf(const char *format, ...);
 char *readstr();
 void printf_serial(const char *format, ...);
 char *readline();
+void clear_screen();
 
 #endif

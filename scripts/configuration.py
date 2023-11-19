@@ -12,7 +12,8 @@ INCLUDE_DIRS = [
     SRCPATH+"common/include/",
     SRCPATH+"interrupts/include/",
     SRCPATH+"ports/include/",
-    SRCPATH+"layouts/"
+    SRCPATH+"layouts/",
+    SRCPATH+"user/include/"
 ]
 
 CXX = "x86_64-linux-gnu-gcc"
@@ -75,6 +76,7 @@ QEMUFLAGS:list[str] = [
     "-serial stdio",
     "-d int",
     "-D qemu_log.txt",
-    "-pflash scripts/OVMF.fd" 
+    "-pflash scripts/OVMF.fd",
+    "-s -S"
 ]
 

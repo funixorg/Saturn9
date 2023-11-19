@@ -137,3 +137,8 @@ char *readline(char *prompt) {
   char *buffer = read_keyboard();
   return buffer;
 }
+
+void clear_screen() {
+  draw_screen(get_background());
+  set_y_offset(DEFAULT_Y);
+}

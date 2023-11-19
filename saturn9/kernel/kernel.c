@@ -10,16 +10,17 @@
 #include <syscalls.h>
 #include <pic.h>
 #include <stdio.h>
+#include <terminal.h>
 
 
 void routine() {
-    char *line=readline("> ");
-    printf("%s\n", line);
+  shell();
 }
 
 void _start(void) {
     framebuffer_init();
     serial_init();
+    terminal_init();
 
     set_background(0x0e0e0e);
     set_foreground(0x3c3c3c);

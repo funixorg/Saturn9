@@ -4,6 +4,7 @@
 
 #include <graphics.h>
 #include <fonts.h>
+#include <stdlib.h>
 #include <common.h>
 
 LIMINE_BASE_REVISION(1);
@@ -143,7 +144,8 @@ void framebuffer_init() {
     }
 
     framebuffer = framebuffer_request.response->framebuffers[0];
-    set_y_offset(get_y_offset()+1);
+    set_y_offset(DEFAULT_Y);
+    set_x_offset(DEFAULT_X);
 }
 
 

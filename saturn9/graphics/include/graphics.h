@@ -5,6 +5,9 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+#define DEFAULT_X 0
+#define DEFAULT_Y 1
+
 extern struct limine_framebuffer_request framebuffer_request;
 
 void draw_pixel(unsigned x, unsigned y, unsigned color);

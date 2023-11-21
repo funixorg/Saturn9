@@ -23,10 +23,10 @@
 
 - [x] Limine bootloader
 - [x] VBE Graphics
-- [ ] Interrupts
-- [ ] PS/2 Keyboard
-- [ ] GDT
-- [ ] TSS
+- [x] Interrupts
+- [x] PS/2 Keyboard
+- [x] GDT
+- [ ] TSS (may ignore for now)
 - [ ] Filesystem/VFS
 - [ ] Initramfs
 - [ ] IO libc
@@ -37,4 +37,4 @@
 
 <h1 align="center">Preview</h1>
 
-![Reference screenshot](assets/s9screen.png)
+![Reference screenshot](assets/s9preview.png)

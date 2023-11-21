@@ -15,5 +15,6 @@ char** str_split(char* a_str, const char a_delim);
 void to_upper(char *lower, const char *str);
 void to_lower(char *upper, const char *str);
 int strcmp(const char* str1, const char* str2);
+char *strncat(char *dest, const char *src, size_t n);
 
 #endif

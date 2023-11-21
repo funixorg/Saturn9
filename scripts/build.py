@@ -50,8 +50,13 @@ def build()->int:
     
     sources = ()
     objects = ()
+    sourcesasm = ()
+    objectasm = ()
     
     try: sources, objects = zip(*src_obj())
+    except ValueError: pass
+    
+    try: sourcesasm, objectasm = zip(*src_obj(SRCPATH, ".asm"))
     except ValueError: pass
     
     if sources and objects:
@@ -61,7 +66,16 @@ def build()->int:
             print(f"Building {source}...")
             exit_code = _sys(cmd)
             if (exit_code != 0): return exit_code
+    
+    if sourcesasm and objectasm:
+        for source,object in zip(sourcesasm, objectasm):
+            cmd = f"{AS} {' '.join(ASFLAGS)} {source} -o {object}"
+            print(f"Building {source}...")
+            exit_code = _sys(cmd)
+            if (exit_code != 0): return exit_code
 
+    if sources and objects:
+        objects += objectasm
         cmd = f"{LD} {' '.join(LDFLAGS)} {' '.join(objects)} -o {KERNEL_OUTPUT}"
         print(f"Linking {(' '.join(objects))}...")
         exit_code = _sys(cmd)

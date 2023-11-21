@@ -1,6 +1,8 @@
 #include <terminal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <idt.h>
 
 //for (i = 0; *(tokens + i); i++)
 
@@ -45,4 +47,5 @@ void shell() {
 
 void terminal_init() {
   add_command("clear", clear_screen);
+  for (;;) { shell(); }
 }

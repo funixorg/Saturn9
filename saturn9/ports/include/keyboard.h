@@ -4,6 +4,9 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
+#define PS2_COMMAND 0x64
+#define PS2_DATA 0x60
+
 typedef struct {
     char key;
     bool shift;
@@ -17,8 +20,11 @@ typedef struct {
 
 void parse_key(uint8_t key, char layout[], char shift_layout[]);
 
-char *read_keyboard();
 char readkey();
-void setkey(char key);
+void setkey(char value);
+void clearbuffer();
+char *readbuffer();
+
+void keyboard_init();
 
 #endif

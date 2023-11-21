@@ -4,6 +4,8 @@
 #include <stdarg.h>
 #include <graphics.h>
 #include <keyboard.h>
+#include <mem.h>
+#include <pit.h>
 
 void printf(const char *format, ...) {
     unsigned fg = get_foreground();
@@ -133,9 +135,12 @@ void printf_serial(const char *format, ...) {
 }
 
 char *readline(char *prompt) {
-  printf("%s", prompt);
-  char *buffer = read_keyboard();
-  return buffer;
+    printf("%s", prompt);
+    clearbuffer();
+    while (readkey() != '\n') {}
+    char *buffer=readbuffer();
+    setkey('\0');
+    return buffer;
 }
 
 void clear_screen() {

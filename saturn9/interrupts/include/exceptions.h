@@ -1,14 +1,19 @@
 #include <idt.h>
-#include <stdlib.h>
+#include <stdio.h>
+#include <pit.h>
+#include <pic.h>
 
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
 // (0-31 in IDT)
 
-__attribute__ ((interrupt)) void div_by_0_handler(int_frame_64_t *frame) {
-    //printf("#{0xff0000} DIVDE BY 0 ERROR - EXCEPTION HANDLED\n");
-    frame->rip++;
+__attribute__((interrupt)) void division_by_zero_error(void*) {
+    printf("Division by zero!\n");
+}
+
+void init_os_interupts() {
+    set_idt_gate(0, (uint64_t)&division_by_zero_error, 0x28, 0x8E);
 }
 
 #endif

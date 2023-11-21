@@ -203,7 +203,22 @@ void to_lower(char *lower, const char *str) {
 int strcmp(const char* s1, const char* s2) {
     if (strlen(s1) != strlen(s2)) {return 0;}
     for (unsigned i=0; i<strlen(s1); i++) {
-      if (s1[i] != s2[i]) { return 0; }  
+        if (s1[i] != s2[i]) { return 0; }  
     }
     return 1;
+}
+
+char *strncat(char *dest, const char *src, size_t n) {
+    size_t dest_len = 0;
+
+    while (dest[dest_len] != '\0') {
+        dest_len++;
+    }
+    size_t i;
+    for (i = 0; i < n && src[i] != '\0'; i++) {
+        dest[dest_len + i] = src[i];
+    }
+
+    dest[dest_len + i] = '\0';
+    return dest;
 }

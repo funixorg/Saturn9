@@ -89,8 +89,8 @@ void putchar(char character, unsigned color, unsigned scale) {
     }
 
     if (character == '\b') {
-      delete_last();
-      return;
+        delete_last();
+        return;
     }
 
     if (start_x + font_width * scale >= screen_width) {

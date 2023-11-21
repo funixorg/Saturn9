@@ -13,13 +13,15 @@ INCLUDE_DIRS = [
     SRCPATH+"interrupts/include/",
     SRCPATH+"ports/include/",
     SRCPATH+"layouts/",
-    SRCPATH+"user/include/"
+    SRCPATH+"user/include/",
+    SRCPATH+"pit/include/"
 ]
 
 CXX = "x86_64-linux-gnu-gcc"
 CXXFLAGS = [
     "-Wall",
     "-Wno-char-subscripts",
+    "-Wno-pointer-to-int-cast",
     "-std=gnu11",
     "-ffreestanding",
     "-fno-stack-protector",
@@ -35,6 +37,11 @@ CXXFLAGS = [
     "-mno-red-zone",
     "-c",
     ' '.join([f'-I./{idir}' for idir in INCLUDE_DIRS])
+]
+
+AS = "nasm"
+ASFLAGS = [
+    "-f elf64"
 ]
 
 LD = "x86_64-linux-gnu-ld"
@@ -76,7 +83,8 @@ QEMUFLAGS:list[str] = [
     "-serial stdio",
     "-d int",
     "-D qemu_log.txt",
-    "-pflash scripts/OVMF.fd",
-    "-s -S"
+    ("-pflash scripts/OVMF.fd" if _osname != "nt" else ""),
+    "-smp 4",
+    #"-s -S"
 ]
 

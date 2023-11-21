@@ -43,8 +43,9 @@ def limine_setup()->int:
     return 0
 
 def fonts():
-    open(f"{SRCPATH}/graphics/include/fonts.h", "w").write(font.bitmap_gen(FONT_PATH))
-    return 0;
+    header = font.bitmap_gen(FONT_PATH)
+    open(f"{SRCPATH}graphics/include/fonts.h", "wb").write(header.encode())
+    return 0
 
 def setup()->None:
     _sys(f"mkdir -p {BIN_DIR}")

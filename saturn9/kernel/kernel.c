@@ -25,7 +25,7 @@ void _start(void) {
     serial_init();
 
     set_background(0x0e0e0e);
-    set_foreground(0x3c3c3c);
+    set_foreground(0x6d6d6d);
     set_fontsize(1);
     draw_screen(get_background());
 

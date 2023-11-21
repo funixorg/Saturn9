@@ -21,7 +21,8 @@ unsigned ypos=0;
 unsigned background;
 unsigned foreground;
 unsigned font_size;
-
+unsigned screen_width;
+unsigned screen_height;
 
 void draw_pixel(unsigned x, unsigned y, unsigned color) {
     uint32_t *fb_ptr = framebuffer->address;
@@ -64,6 +65,16 @@ void draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned 
     }
 }
 
+void draw_cursor() {
+    putchar('_', get_foreground(), get_fontsize());
+    xpos--;
+}
+
+void delete_cursor() {
+    putchar('_', get_background(), get_fontsize());
+    xpos--;
+}
+
 void delete_last() {
     xpos--;
 
@@ -77,13 +88,19 @@ void delete_last() {
     }
 }
 
+void scroll_up() {
+    draw_screen(get_background());
+    ypos=DEFAULT_Y;
+    xpos=DEFAULT_X;
+}
+
 void putchar(char character, unsigned color, unsigned scale) {
     unsigned start_x = xpos * (font_width * scale);
     unsigned start_y = ypos * (font_height * scale);
     unsigned screen_width = framebuffer->width;
 
     if (character == '\n') {
-        xpos = 0;
+        xpos = DEFAULT_X;
         ypos += 2;
         return;
     }
@@ -94,8 +111,14 @@ void putchar(char character, unsigned color, unsigned scale) {
     }
 
     if (start_x + font_width * scale >= screen_width) {
-        xpos = 0;
+        xpos = DEFAULT_X;
         ypos += 2;
+        start_x = xpos * (font_width * scale);
+        start_y = ypos * (font_height * scale);
+    }
+
+    if (start_y + font_height * scale >= screen_height) {
+        scroll_up();
         start_x = xpos * (font_width * scale);
         start_y = ypos * (font_height * scale);
     }
@@ -144,6 +167,8 @@ void framebuffer_init() {
     }
 
     framebuffer = framebuffer_request.response->framebuffers[0];
+    screen_width = framebuffer->width;
+    screen_height = framebuffer->height;
     set_y_offset(DEFAULT_Y);
     set_x_offset(DEFAULT_X);
 }

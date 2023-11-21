@@ -17,6 +17,9 @@ void putchar(char character, unsigned color, unsigned scale);
 void draw_screen(unsigned color);
 void framebuffer_init();
 
+void draw_cursor();
+void delete_cursor();
+
 void set_x_offset(unsigned value);
 void set_y_offset(unsigned value);
 unsigned get_x_offset();

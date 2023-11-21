@@ -135,7 +135,7 @@ void printf_serial(const char *format, ...) {
 }
 
 char *readline(char *prompt) {
-    printf("%s", prompt);
+    printf(prompt);
     clearbuffer();
     while (readkey() != '\n') {}
     char *buffer=readbuffer();

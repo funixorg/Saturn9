@@ -7,6 +7,7 @@
 #include <mem.h>
 #include <pic.h>
 #include <idt.h>
+#include <graphics.h>
 
 KeyboardInfo keyboard_info;
 
@@ -46,12 +47,15 @@ void parse_key(uint8_t key, char layout[], char shift_layout[]) {
                 keyboard_info.key = layout[key - 1];
                 keyboard_info.buffer[keyboard_info.bindex] = layout[key - 1];
             }
-            printf("%s", chtostr(keyboard_info.key));
 
             if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex > 0) {
                 keyboard_info.bindex--;
-            } else {
+                printf("%s", chtostr(keyboard_info.key));
+            }
+            else if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex <= 0) {}
+            else {
                 keyboard_info.bindex++;
+                printf("%s", chtostr(keyboard_info.key));
             }
 
             // Null-terminate the buffer
@@ -91,6 +95,7 @@ char *readbuffer() {
 
 __attribute__((interrupt)) void keyboard_handler(void *)
 {
+    if (keyboard_info.key) { draw_cursor(); }
     uint8_t data = inb(PS2_DATA);
 
     if (data == 0) {
@@ -99,6 +104,7 @@ __attribute__((interrupt)) void keyboard_handler(void *)
     }
 
     if (data < 0x80) {
+        if (keyboard_info.key) { delete_cursor(); }
         parse_key(data, en_US_layout, en_US_shift_layout);
         keyboard_info.buffer[keyboard_info.bindex] = keyboard_info.key;
     } else { parse_release(data); }

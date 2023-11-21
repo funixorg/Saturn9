@@ -1,7 +1,10 @@
 from PIL import Image, ImageDraw, ImageFont
-import sys
+import sys, os
+from configuration import FONT_WIDTH, FONT_HEIGHT
 
 font_size = 16
+font_width = FONT_WIDTH
+font_height = FONT_HEIGHT
 
 def convert_to_bitmap_array(bitmap_image):
     width, height = bitmap_image.size
@@ -44,10 +47,13 @@ def generate_c_array_from_ttf(font_path):
     return all_characters_bitmap
 
 def bitmap_gen(font_path:str)->str:
+    if not os.path.exists(font_path):
+        print(f"Font file not found at: {font_path}")
+        exit(1)
     ttf_font_path = font_path
     all_characters = generate_c_array_from_ttf(ttf_font_path)
     
-    output = f"#include <stdint.h>\n#ifndef FONT_H\n#define FONT_H\nconst int font_width = {font_size/2};\nconst int font_height = {font_size};\n\n"
+    output = f"#include <stdint.h>\n#ifndef FONT_H\n#define FONT_H\nconst int font_width = {font_width};\nconst int font_height = {font_height};\n\n"
 
     output += f"uint8_t font[{len(all_characters)}][{font_size}] = {{\n"
     for bitmap_array in all_characters:

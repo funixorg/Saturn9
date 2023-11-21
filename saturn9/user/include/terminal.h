@@ -1,7 +1,7 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
-#define PROMPT "> "
+#define PROMPT "#{0x3c3c3c}/> "
 
 
 #define MAX_ENTRIES 128

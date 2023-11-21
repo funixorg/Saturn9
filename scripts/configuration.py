@@ -4,6 +4,8 @@ SRCPATH="saturn9/"
 LINKSCRIPT=SRCPATH+"cfg/linker.ld"
 LIMINE_CONF = SRCPATH+"cfg/limine.cfg"
 LIMINE_DIR = SRCPATH+"limine/"
+FONT_PATH = "scripts/fonts/Sweet16.ttf"
+
 INCLUDE_DIRS = [
     LIMINE_DIR,
     SRCPATH+"fs/include/",

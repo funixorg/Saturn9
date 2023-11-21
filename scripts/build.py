@@ -1,5 +1,6 @@
 from os import walk as _walk, system as _sys, name as _osname
 from configuration import *
+import font
 
 
 def src_obj(path:str=SRCPATH, ext:str=".c", exclude:list[str]=[SRCPATH+"limine"])->list[(str, str)]:
@@ -41,11 +42,16 @@ def limine_setup()->int:
 
     return 0
 
+def fonts():
+    open(f"{SRCPATH}/graphics/include/fonts.h", "w").write(font.bitmap_gen(FONT_PATH))
+    return 0;
+
 def setup()->None:
     _sys(f"mkdir -p {BIN_DIR}")
     _sys(f"mkdir -p {ISODIR}")
 
 def build()->int:
+    fonts()
     setup()
     
     sources = ()

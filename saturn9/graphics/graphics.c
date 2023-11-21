@@ -191,25 +191,19 @@ unsigned get_fontsize() {
 
 
 void printstr(const char* string, unsigned color, unsigned scale) {
-    char modifiedString[2048];
-    to_upper(modifiedString, string);
-
     unsigned i=0;
-    while (modifiedString[i] != '\0') {
-        putchar(modifiedString[i], color, scale);
+    while (string[i] != '\0') {
+        putchar(string[i], color, scale);
         i++;
     }
 }
 
 void print_at(const char* string, unsigned x, unsigned y, unsigned color, unsigned scale) {
-    char modifiedString[2048];
-    to_upper(modifiedString, string);
-
     unsigned xi = x;
 
     unsigned i = 0;
-    while (modifiedString[i] != '\0') {
-        draw_char(xi, y, modifiedString[i], color, scale);
+    while (string[i] != '\0') {
+        draw_char(xi, y, string[i], color, scale);
         xi++;
         i++;
     }

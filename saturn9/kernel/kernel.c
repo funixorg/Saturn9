@@ -26,7 +26,7 @@ void _start(void) {
 
     set_background(0x0e0e0e);
     set_foreground(0x3c3c3c);
-    set_fontsize(2);
+    set_fontsize(1);
     draw_screen(get_background());
 
     printf_serial("[OK] Serial\n");
@@ -52,19 +52,17 @@ void _start(void) {
     while (get_x_offset()>0) { delete_last(); }
     printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}STACK\n");
 
-    //terminal_init();
-    printf("[...] #{0xffc0cb}KEYBOARD");
-    keyboard_init();
-    while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}KEYBOARD\n");
-
     printf("[...] #{0xffc0cb}EXCEPTIONS");
     init_os_interupts();
     while (get_x_offset()>0) { delete_last(); }
     printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}EXCEPTIONS\n");
 
+    pit_sleep(10);
 
-    pit_sleep(300);
+    printf("[...] #{0xffc0cb}KEYBOARD");
+    keyboard_init();
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}KEYBOARD\n");
 
     terminal_init();
     /*for (;;) {

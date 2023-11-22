@@ -37,4 +37,4 @@
 
 <h1 align="center">Preview</h1>
 
-![Reference screenshot](assets/s9screen.png)
+![Reference screenshot](assets/s9prev.png)

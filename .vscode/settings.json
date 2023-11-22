@@ -14,7 +14,11 @@
         "syscalls.h": "c",
         "keyboardlayouts.h": "c",
         "serial.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "lexer.h": "c",
+        "pmm.h": "c",
+        "terminal.h": "c",
+        "stack.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

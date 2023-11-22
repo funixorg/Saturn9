@@ -18,7 +18,8 @@ INCLUDE_DIRS = [
     SRCPATH+"ports/include/",
     SRCPATH+"layouts/",
     SRCPATH+"user/include/",
-    SRCPATH+"pit/include/"
+    SRCPATH+"pit/include/",
+    SRCPATH+"rhea/",
 ]
 
 CXX = "x86_64-linux-gnu-gcc"
@@ -80,13 +81,13 @@ XISOFLAGS = [
 
 QEMU = ("qemu-system-x86_64.exe" if _osname == "nt" else "qemu-system-x86_64")
 QEMUFLAGS:list[str] = [
-    "-m 256",
+    "-m 128",
     ('-L "C:\Program Files\qemu"' if _osname == "nt" else ""),
     "-no-reboot",
     "-no-shutdown",
     "-serial stdio",
-    "-d int",
-    "-D qemu_log.txt",
+    #"-d int",
+    #"-D qemu_log.txt",
     ("-pflash scripts/OVMF.fd" if _osname != "nt" else ""),
     "-smp 4",
     #"-s -S"

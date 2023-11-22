@@ -6,7 +6,7 @@
 #define GRAPHICS_H
 
 #define DEFAULT_X 0
-#define DEFAULT_Y 1
+#define DEFAULT_Y 4
 
 extern struct limine_framebuffer_request framebuffer_request;
 

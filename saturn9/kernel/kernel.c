@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <idt.h>
 #include <exceptions.h>
-#include <stack.h>
 #include <serial.h>
 #include <pic.h>
 #include <stdio.h>
@@ -13,10 +12,9 @@
 #include <gdt.h>
 #include <irqs.h>
 #include <keyboard.h>
+#include <pmm.h>
+#include <rhea.h>
 
-void routine() {
-  shell();
-}
 
 void _start(void) {
     sys_init_fpu();
@@ -34,35 +32,56 @@ void _start(void) {
     printf("[...] #{0xffc0cb}IDT");
     idt_init();
     while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}IDT\n");
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}IDT\n");
 
     printf("[...] #{0xffc0cb}PIT");
     i8259_Configure(PIC_REMAP_OFFSET, PIC_REMAP_OFFSET + 8, false);
     pit_init();
     while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}PIT\n");
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}PIT\n");
 
     printf("[...] #{0xffc0cb}ROUTINE");
     init_periodic_event();
     while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}ROUTINE\n");
-
-    printf("[...] #{0xffc0cb}STACK");
-    stack_init();
-    while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}STACK\n");
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}ROUTINE\n");
 
     printf("[...] #{0xffc0cb}EXCEPTIONS");
     init_os_interupts();
     while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}EXCEPTIONS\n");
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}EXCEPTIONS\n");
+
+    printf("[...] #{0xffc0cb}STACK");
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}STACK %s\n", formatBytes(STACK_SIZE));
+
+    printf("[...] #{0xffc0cb}MEMORY");
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}MEMORY %s\n", formatBytes(get_avaiable_mem()));
+
+    printf("[...] #{0xffc0cb}LVL4-PAGING");
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}LVL4-PAGING\n");
+
+    printf("[...] #{0xffc0cb}CPU");
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}%d CPUs\n", get_cpu_count());
+
+    printf("[...] #{0xffc0cb}BOOT_TIME");
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}BOOT_TIME %s\n", unix_to_time(get_boot_time()));
+
+    printf("[...] #{0xffc0cb}KERNEL_ADDR");
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KERNEL_ADDR %x\n", get_kernel_addr());
 
     pit_sleep(10);
 
     printf("[...] #{0xffc0cb}KEYBOARD");
     keyboard_init();
     while (get_x_offset()>0) { delete_last(); }
-    printf("[#{0x00ff00}OK#{0x3c3c3c}] #{0xffc0cb}KEYBOARD\n");
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KEYBOARD\n");
+
+    //rhea_proc("1254");
 
     terminal_init();
     /*for (;;) {

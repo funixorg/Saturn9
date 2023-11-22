@@ -208,17 +208,84 @@ int strcmp(const char* s1, const char* s2) {
     return 1;
 }
 
-char *strncat(char *dest, const char *src, size_t n) {
-    size_t dest_len = 0;
+char *strncat (char *s1, const char *s2, size_t n) {
+  char *s = s1;
+  /* Find the end of S1.  */
+  s1 += strlen (s1);
+  size_t ss = strlen (s2);
+  s1[ss] = '\0';
+  memcpy (s1, s2, ss);
+  return s;
+}
 
-    while (dest[dest_len] != '\0') {
-        dest_len++;
-    }
-    size_t i;
-    for (i = 0; i < n && src[i] != '\0'; i++) {
-        dest[dest_len + i] = src[i];
+char* unix_to_time(uint32_t unix_time) {
+    printf_serial("%d\n",unix_time)
+    char* time_str = memalloc(9);
+
+    if (time_str == NULL) {
+        return NULL;
     }
 
-    dest[dest_len + i] = '\0';
-    return dest;
+    uint32_t hours = unix_time / 3600;
+    unix_time %= 3600;
+
+    uint32_t minutes = unix_time / 60;
+    unix_time %= 60;
+
+    uint32_t seconds = unix_time;
+
+    // Manually build the time string
+    time_str[0] = '0' + (hours / 10);
+    time_str[1] = '0' + (hours % 10);
+    time_str[2] = ':';
+    time_str[3] = '0' + (minutes / 10);
+    time_str[4] = '0' + (minutes % 10);
+    time_str[5] = ':';
+    time_str[6] = '0' + (seconds / 10);
+    time_str[7] = '0' + (seconds % 10);
+    time_str[8] = '\0';
+
+    return time_str;
+}
+
+char* intoa(int i, char b[]){
+    char const digit[] = "0123456789";
+    char* p = b;
+    if(i<0){
+        *p++ = '-';
+        i *= -1;
+    }
+    int shifter = i;
+    do{ //Move to where representation ends
+        ++p;
+        shifter = shifter/10;
+    }while(shifter);
+    *p = '\0';
+    do{ //Move back, inserting digits as u go
+        *--p = digit[i%10];
+        i = i/10;
+    }while(i);
+    return b;
+}
+
+char* formatBytes(uint64_t bytes) {
+    static const char* units[] = {"B", "KB", "MB", "GB"};
+    static char result[32];  
+
+    int unitIndex = 0;
+
+    while (bytes >= 1024 && unitIndex < sizeof(units) / sizeof(units[0]) - 1) {
+        bytes /= 1024;
+        unitIndex++;
+    }
+
+    char bytesStr[32];
+    intoa(bytes, bytesStr);
+
+    result[0] = '\0';
+    strncat(result, bytesStr, 32);
+    strncat(result, " ", 1);
+    strncat(result, units[unitIndex], 2);
+
+    return result;
 }

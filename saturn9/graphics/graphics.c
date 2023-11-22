@@ -79,7 +79,7 @@ void delete_last() {
     xpos--;
 
     unsigned start_x = xpos * (font_width * get_fontsize());
-    unsigned start_y = ypos * (font_height * get_fontsize());
+    unsigned start_y = (ypos * (font_height * get_fontsize())/2);
 
     for (int i = 0; i < font_height * get_fontsize(); ++i) {
         for (int j = 0; j < font_width * get_fontsize(); ++j) {
@@ -94,9 +94,13 @@ void scroll_up() {
     xpos=DEFAULT_X;
 }
 
+void draw_bar() {
+    draw_rectangle(0,0, screen_width, font_height*get_fontsize()+6, 0x222222);
+}
+
 void putchar(char character, unsigned color, unsigned scale) {
     unsigned start_x = xpos * (font_width * scale);
-    unsigned start_y = ypos * (font_height * scale);
+    unsigned start_y = (ypos * (font_height * scale)/2);
     unsigned screen_width = framebuffer->width;
 
     if (character == '\n') {
@@ -114,13 +118,13 @@ void putchar(char character, unsigned color, unsigned scale) {
         xpos = DEFAULT_X;
         ypos += 2;
         start_x = xpos * (font_width * scale);
-        start_y = ypos * (font_height * scale);
+        start_y = (ypos * (font_height * scale)/2);
     }
 
     if (start_y + font_height * scale >= screen_height) {
         scroll_up();
         start_x = xpos * (font_width * scale);
-        start_y = ypos * (font_height * scale);
+        start_y = (ypos * (font_height * scale))/2;
     }
 
     draw_rectangle(start_x, start_y, font_width*scale, font_height*scale, get_background());
@@ -153,6 +157,7 @@ void draw_screen(unsigned color) {
         x=0;
         y++;
     }
+    draw_bar();
 }
 
 void framebuffer_init() {

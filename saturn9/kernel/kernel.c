@@ -29,6 +29,11 @@ void _start(void) {
 
     printf_serial("[OK] Serial\n");
 
+    /*printf("[...] #{0xffc0cb}GDT");
+    gdt_init();
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}GDT\n");*/
+
     printf("[...] #{0xffc0cb}IDT");
     idt_init();
     while (get_x_offset()>0) { delete_last(); }
@@ -81,7 +86,7 @@ void _start(void) {
     while (get_x_offset()>0) { delete_last(); }
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KEYBOARD\n");
 
-    //rhea_proc("1254");
+    rhea_proc("1254");
 
     terminal_init();
     /*for (;;) {

@@ -219,7 +219,6 @@ char *strncat (char *s1, const char *s2, size_t n) {
 }
 
 char* unix_to_time(uint32_t unix_time) {
-    printf_serial("%d\n",unix_time)
     char* time_str = memalloc(9);
 
     if (time_str == NULL) {

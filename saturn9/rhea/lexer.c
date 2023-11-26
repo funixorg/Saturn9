@@ -14,13 +14,13 @@ void lexer_proc(char* source) {
     lexstat.column=1;
     lexstat.current_char = source[lexstat.pos];
     printf_serial("Ready, Lexer, Go\n");
-    while (lexstat.pos < sizeof(source)/sizeof(char*)) {
+    while (lexstat.pos < strlen(lexstat.content)) {
         tok_processor();
     }
 }
 
 void advance() {
-    if (lexstat.pos < sizeof(lexstat.content)/sizeof(char*)) {
+    if (lexstat.pos < strlen(lexstat.content)) {
         lexstat.pos++;
         lexstat.current_char = lexstat.content[lexstat.pos];
     }
@@ -48,15 +48,16 @@ bool is_number(char ch) {
 Token numeric_lex() {
     char *value=memalloc(64);
     unsigned _i=0;
-    while (is_number(lexstat.current_char)) {
+    while (is_number(lexstat.current_char) && lexstat.pos < strlen(lexstat.content)) {
         value[_i]=lexstat.current_char;
         advance();
         _i++;
     }
     value[_i]='\0';
-    
+
     Token ntok;
     ntok.type = INTEGER;
     ntok.value = value;
+    printf_serial("%s\n", value);
     return ntok;
 }

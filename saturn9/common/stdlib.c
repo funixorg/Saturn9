@@ -42,18 +42,6 @@ void itoa(int num, char str[], int base) {
     reverse(str, i);
 }
 
-char* chtostr(char c) {
-    char* str = (char*)memalloc(2);
-    if (str == NULL) {
-        return NULL;
-    }
-
-    str[0] = c;
-    str[1] = '\0';
-
-    return str;
-}
-
 int atoi(const char *str) {
     int result = 0;
 

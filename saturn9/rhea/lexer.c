@@ -5,6 +5,15 @@
 #include <stdlib.h>
 #include <mem.h>
 
+SymbolType symbols[] = {
+    {'+', PLUS},
+    {'-', MINUS},
+    {'*', MUL},
+    {'/', DIV},
+    {'(', LPAREN},
+    {')', RPAREN}
+};
+
 LexerStatus lexstat;
 
 void lexer_proc(char* source) {
@@ -38,6 +47,9 @@ Token tok_processor() {
     }
     else if (lexstat.current_char == '"') {
         return string_lex();
+    }
+    else if (is_symbol(lexstat.current_char)) {
+        return symbol_lex();
     }
     else {advance();}
 }
@@ -75,6 +87,25 @@ bool is_hex(char ch) {
     ch=='C'  || ch=='D' ||
     ch=='E'  || ch=='F')) {
         return true;
+    }
+    return false;
+}
+
+
+bool is_symbol(char ch) {
+    for (unsigned _i=0;_i<sizeof(symbols)/sizeof(SymbolType);_i++) {
+        if (ch==symbols[_i].symbol) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Token symeqtok(char ch) {
+    for (unsigned _i=0;_i<sizeof(symbols)/sizeof(SymbolType);_i++) {
+        if (ch==symbols[_i].symbol) {
+            return true;
+        }
     }
     return false;
 }
@@ -125,11 +156,17 @@ Token string_lex() {
         advance();
         _i++;
     }
-    advance();
+    advance(); // Skip quote
     printf_serial("STRING: \"%s\"\n", value);
 
     Token stok;
     stok.type=STRING;
     stok.value=value;
     return stok;
+}
+
+
+Token symbol_lex() {
+    
+    printf_serial("SYMBOL: %c\n", lexstat.current_char);
 }

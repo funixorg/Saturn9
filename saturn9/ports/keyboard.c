@@ -50,12 +50,12 @@ void parse_key(uint8_t key, char layout[], char shift_layout[]) {
 
             if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex > 0) {
                 keyboard_info.bindex--;
-                printf("%s", chtostr(keyboard_info.key));
+                putchar(keyboard_info.key, get_foreground(), get_fontsize());
             }
             else if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex <= 0) {}
             else {
                 keyboard_info.bindex++;
-                printf("%s", chtostr(keyboard_info.key));
+                putchar(keyboard_info.key, get_foreground(), get_fontsize());
             }
 
             // Null-terminate the buffer

@@ -41,9 +41,18 @@ void printf(const char *format, ...) {
                     printstr(buffer, get_foreground(), get_fontsize());
                     break;
                 }
+                case 'c': {
+                    char value = va_arg(args, int);
+                    char buffer[2];
+                    buffer[0]=value;
+                    buffer[1]='\0';
+                    printstr(buffer, get_foreground(), get_fontsize());
+                    break;
+                }
                 default:
                     putchar('%', get_foreground(), get_fontsize());
-                    printstr(chtostr(*format), get_foreground(), get_fontsize());
+                    putchar(*format, get_foreground(), get_fontsize());
+
             }
         } else if (*format == '#') {
             format++;
@@ -60,7 +69,7 @@ void printf(const char *format, ...) {
                 set_foreground(atoi(cvalue));
             } else {
                 putchar('#', get_foreground(), get_fontsize());
-                printstr(chtostr(*format), get_foreground(), get_fontsize());
+                putchar(*format, get_foreground(), get_fontsize());
             }
         } else if (*format == '$') {
             format++;
@@ -76,10 +85,10 @@ void printf(const char *format, ...) {
                 set_background(atoi(cvalue));
             } else {
                 putchar('#', get_foreground(), get_fontsize());
-                printstr(chtostr(*format), get_foreground(), get_fontsize());
+                putchar(*format, get_foreground(), get_fontsize());
             }
         } else {
-            printstr(chtostr(*format), get_foreground(), get_fontsize());
+            putchar(*format, get_foreground(), get_fontsize());
         }
 
         format++;
@@ -117,6 +126,14 @@ void printf_serial(const char *format, ...) {
                     char buffer[128];
                     itoa(value, buffer, 16);
                     write_serial("0x");
+                    write_serial(buffer);
+                    break;
+                }
+                case 'c': {
+                    char value = va_arg(args, int);
+                    char buffer[2];
+                    buffer[0]=value;
+                    buffer[1]='\0';
                     write_serial(buffer);
                     break;
                 }

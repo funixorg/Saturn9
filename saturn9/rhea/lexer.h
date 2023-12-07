@@ -16,9 +16,12 @@ typedef struct LexerStatus {
 
 void lexer_proc(char* source);
 void advance();
-void tok_processor();
+Token tok_processor();
 bool is_number(char ch);
+bool is_alpha(char ch);
+bool is_hex(char ch);
 Token numeric_lex();
-
+Token identifier_lex();
+Token string_lex();
 
 #endif

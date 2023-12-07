@@ -49,7 +49,7 @@ ASFLAGS = [
     "-f elf64"
 ]
 
-LD = "x86_64-linux-gnu-ld"
+LD = "ld"
 LDFLAGS = [
     "-m elf_x86_64",
     "-nostdlib",
@@ -88,7 +88,7 @@ QEMUFLAGS:list[str] = [
     "-serial stdio",
     #"-d int",
     #"-D qemu_log.txt",
-    ("-pflash scripts/OVMF.fd" if _osname != "nt" else ""),
+    ("-L scripts/OVMF.fd" if _osname != "nt" else ""),
     "-smp 4",
     #"-s -S"
 ]

@@ -3,6 +3,7 @@
 
 enum TokenType {
     INTEGER,
+    HEXINT,
     IDENTIFIER,
     STRING
 };

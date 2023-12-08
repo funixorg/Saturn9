@@ -1,4 +1,4 @@
 bin/
 isodir/
 scripts/__pycache__/
-.vscode/
+**/.vscode/

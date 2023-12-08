@@ -101,13 +101,13 @@ bool is_symbol(char ch) {
     return false;
 }
 
-Token symeqtok(char ch) {
+enum TokenType symeqtok(char ch) {
     for (unsigned _i=0;_i<sizeof(symbols)/sizeof(SymbolType);_i++) {
         if (ch==symbols[_i].symbol) {
-            return true;
+            return symbols[_i].type;
         }
     }
-    return false;
+    return PLUS;
 }
 
 Token numeric_lex() {
@@ -167,6 +167,12 @@ Token string_lex() {
 
 
 Token symbol_lex() {
-    
-    printf_serial("SYMBOL: %c\n", lexstat.current_char);
+    Token stok;
+    stok.value=memalloc(2);
+    stok.value[0]=lexstat.current_char;
+    stok.value[1]='\0';
+    stok.type=symeqtok(lexstat.current_char);
+    advance();
+    printf_serial("SYMBOL: %s\n", stok.value);
+    return stok;
 }

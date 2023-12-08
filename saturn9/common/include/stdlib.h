@@ -16,6 +16,7 @@ void to_upper(char *lower, const char *str);
 void to_lower(char *upper, const char *str);
 int strcmp(const char* str1, const char* str2);
 char* cstrncat(char* destination, const char* source);
+char* strcpy(char* dest, const char* src);
 char* unix_to_time(uint32_t unix_time);
 char* formatBytes(uint64_t bytes);
 

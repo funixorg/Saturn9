@@ -22,7 +22,7 @@ INCLUDE_DIRS = [
     SRCPATH+"rhea/",
 ]
 
-CXX = "x86_64-linux-gnu-gcc"
+CXX = "gcc"
 CXXFLAGS = [
     "-Wall",
     "-Wno-char-subscripts",

@@ -31,6 +31,7 @@ CXXFLAGS = [
     "-ffreestanding",
     "-fno-stack-protector",
     "-fno-stack-check",
+    "-Wno-unused-but-set-variable",
     "-fno-lto",
     "-fPIE",
     "-m64",
@@ -82,7 +83,7 @@ XISOFLAGS = [
 QEMU = ("qemu-system-x86_64.exe" if _osname == "nt" else "qemu-system-x86_64")
 QEMUFLAGS:list[str] = [
     "-m 128",
-    ('-L "C:\Program Files\qemu"' if _osname == "nt" else ""),
+    ('-L "C:\\Program Files\\qemu"' if _osname == "nt" else ""),
     "-no-reboot",
     "-no-shutdown",
     "-serial stdio",

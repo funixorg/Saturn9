@@ -18,10 +18,6 @@ struct limine_module_request rdrequest = {
     .internal_modules = &ramdisk
 };
 
-char *print_uuid(struct limine_uuid uuid) {
-    return format("%d-%d-%d-%d", uuid.a, uuid.b, uuid.c, uuid.d);
-}
-
 
 void read_rd(void *address, unsigned size) {
     char buffer[size+1];
@@ -30,7 +26,7 @@ void read_rd(void *address, unsigned size) {
         buffer[_i] = ptr[_i];
     }
     buffer[size] = '\0';
-    printf_serial("CONTENT: %s\n", buffer);
+    fs_parse_rd(buffer);
 }
 
 

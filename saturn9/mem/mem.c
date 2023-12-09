@@ -72,7 +72,11 @@ void initialize_memory_pool() {
 }
 
 void free(void *ptr) {
-    if (ptr >= memory_pool && ptr < memory_pool + MEMORY_POOL_SIZE) {
+    uintptr_t pool_start = (uintptr_t)memory_pool;
+    uintptr_t pool_end = pool_start + MEMORY_POOL_SIZE;
+    uintptr_t ptr_value = (uintptr_t)ptr;
+
+    if (ptr_value >= pool_start && ptr_value < pool_end) {
         memory_pool_ptr = ptr;
     }
 }

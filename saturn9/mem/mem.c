@@ -67,6 +67,12 @@ void *memalloc(size_t size) {
     }
 }
 
-void memalloc_reset() {
+void initialize_memory_pool() {
     memory_pool_ptr = memory_pool;
+}
+
+void free(void *ptr) {
+    if (ptr >= memory_pool && ptr < memory_pool + MEMORY_POOL_SIZE) {
+        memory_pool_ptr = ptr;
+    }
 }

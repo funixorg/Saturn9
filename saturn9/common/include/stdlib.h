@@ -19,5 +19,6 @@ char* cstrncat(char* destination, const char* source);
 char* strcpy(char* dest, const char* src);
 char* unix_to_time(uint32_t unix_time);
 char* formatBytes(uint64_t bytes);
+char *format(const char *format, ...);
 
 #endif

@@ -14,7 +14,7 @@ typedef struct {
     bool modifier;
     bool capslock;
     bool alt;
-    char buffer[512];
+    char buffer[256];
     unsigned bindex;
 } KeyboardInfo;
 

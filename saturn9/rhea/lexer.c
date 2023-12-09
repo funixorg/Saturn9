@@ -11,7 +11,8 @@ SymbolType symbols[] = {
     {'*', MUL},
     {'/', DIV},
     {'(', LPAREN},
-    {')', RPAREN}
+    {')', RPAREN},
+				//{'<', }
 };
 
 LexerStatus lexstat;
@@ -127,6 +128,7 @@ Token numeric_lex() {
     if (!bis_hex) { ntok.type = INTEGER; }
     else { ntok.type = HEXINT; }
     ntok.value = value;
+    free(value);
     printf_serial("INT/HEX: %s\n", value);
     return ntok;
 }
@@ -144,6 +146,7 @@ Token identifier_lex() {
     Token itok;
     itok.type=IDENTIFIER;
     itok.value=value;
+    free(value);
     return itok;
 }
 
@@ -162,6 +165,7 @@ Token string_lex() {
     Token stok;
     stok.type=STRING;
     stok.value=value;
+    free(value);
     return stok;
 }
 

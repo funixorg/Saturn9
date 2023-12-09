@@ -2,3 +2,5 @@ bin/
 isodir/
 scripts/__pycache__/
 **/.vscode/
+.vscode/*
+!.vscode/settings.json

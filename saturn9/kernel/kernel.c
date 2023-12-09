@@ -14,6 +14,7 @@
 #include <keyboard.h>
 #include <pmm.h>
 #include <rhea.h>
+#include <initrd.h>
 
 
 void _start(void) {
@@ -78,6 +79,11 @@ void _start(void) {
     printf("[...] #{0xffc0cb}KERNEL_ADDR");
     while (get_x_offset()>0) { delete_last(); }
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KERNEL_ADDR %x\n", get_kernel_addr());
+
+    printf("[...] #{0xffc0cb}INITRD");
+    initramdisk();
+    while (get_x_offset()>0) { delete_last(); }
+    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}INITRD\n");
 
     pit_sleep(10);
 

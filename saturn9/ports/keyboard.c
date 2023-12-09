@@ -10,56 +10,64 @@
 #include <graphics.h>
 
 KeyboardInfo keyboard_info;
+unsigned layout_size;
 
 void parse_key(uint8_t key, char layout[], char shift_layout[]) {
-    if (key == 1) {
-        return;
-    } else if (key == 58) {
-        if (keyboard_info.capslock) {
-            keyboard_info.capslock = false;
-        } else {
-            keyboard_info.capslock = true;
+    switch (key) {
+        case 1: {
+            break;
         }
-        return;
-    } else if (key == 42) {
-        keyboard_info.shift = true;
-        return;
-    } else if (key == 54) {
-        keyboard_info.shift = true;
-        return;
-    } else if (key == 29) {
-        keyboard_info.ctrl = true;
-        return;
-    } else if (key == 91) {
-        keyboard_info.modifier = true;
-        return;
-    } else if (key == 56) {
-        keyboard_info.alt = true;
-        return;
-    } else if (key == 93) {
-        // Do nothing for now
-    } else {
-        if (key <= strlen(layout)) {
-            if (keyboard_info.shift) {
-                keyboard_info.key = shift_layout[key - 1];
-                keyboard_info.buffer[keyboard_info.bindex] = shift_layout[key - 1];
-            } else {
-                keyboard_info.key = layout[key - 1];
-                keyboard_info.buffer[keyboard_info.bindex] = layout[key - 1];
-            }
+        case 58: {
+            keyboard_info.capslock = !keyboard_info.capslock;
+            break;
+        }
+        case 42: {
+            keyboard_info.shift = true;
+            break;
+        }
+        case 54: {
+            keyboard_info.shift = true;
+            break;
+        }
+        case 29: {
+            keyboard_info.ctrl = true;
+            break;
+        }
+        case 91: {
+            keyboard_info.modifier = true;
+            break;
+        }
+        case 56: {
+            keyboard_info.alt = true;
+            break;
+        }
+        case 93: {
 
-            if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex > 0) {
-                keyboard_info.bindex--;
-                putchar(keyboard_info.key, get_foreground(), get_fontsize());
-            }
-            else if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex <= 0) {}
-            else {
-                keyboard_info.bindex++;
-                putchar(keyboard_info.key, get_foreground(), get_fontsize());
-            }
+        }
+        default: {
+            if (key <= layout_size) {
+                if (keyboard_info.shift) {
+                    keyboard_info.key = shift_layout[key - 1];
+                    keyboard_info.buffer[keyboard_info.bindex] = keyboard_info.key;
+                } else {
+                    keyboard_info.key = layout[key - 1];
+                    keyboard_info.buffer[keyboard_info.bindex] = keyboard_info.key;
+                }
 
-            // Null-terminate the buffer
-            keyboard_info.buffer[keyboard_info.bindex] = '\0';
+                if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex > 0) {
+                    keyboard_info.bindex--;
+                    putchar(keyboard_info.key, get_foreground(), get_fontsize());
+                }
+                else if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex <= 0) {}
+                else {
+                    keyboard_info.bindex++;
+                    putchar(keyboard_info.key, get_foreground(), get_fontsize());
+                }
+
+                // Null-terminate the buffer
+                keyboard_info.buffer[keyboard_info.bindex] = '\0';
+            }
+            break;
         }
     }
 }
@@ -98,7 +106,7 @@ __attribute__((interrupt)) void keyboard_handler(void *)
     if (keyboard_info.key) { draw_cursor(); }
     uint8_t data = inb(PS2_DATA);
 
-    if (data == 0) {
+    if (!data) {
         i8259_SendEndOfInterrupt(1);
         return;
     }
@@ -115,6 +123,7 @@ __attribute__((interrupt)) void keyboard_handler(void *)
 void keyboard_init() {
     keyboard_info.bindex=0;
     set_idt_gate(0x21, (uint64_t)&keyboard_handler, 0x28, 0x8E);
+    layout_size=strlen(en_US_layout);
 
     if (inb(PS2_COMMAND) & 0x1)
         inb(PS2_DATA);

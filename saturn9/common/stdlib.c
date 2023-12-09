@@ -276,3 +276,62 @@ char* formatBytes(uint64_t bytes) {
 
     return result;
 }
+
+char *format(const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    char *outstr=memalloc(512);
+
+    while (*format != '\0') {
+        if (*format == '%') {
+            format++;
+
+            switch (*format) {
+                case 'd': {
+                    int value = va_arg(args, int);
+                    char buffer[16];
+                    itoa(value, buffer, 10);
+                    strncat(outstr,buffer,strlen(buffer));
+                    break;
+                }
+                case 's': {
+                    const char *str = va_arg(args, const char *);
+                    strncat(outstr,str,sizeof(str)/sizeof(char*));
+                    break;
+                }
+                case 'x': {
+                    int value = va_arg(args, int);
+                    char buffer[16];
+                    itoa(value, buffer, 16);
+                    strncat(outstr,"0x",2);
+                    strncat(outstr,buffer,sizeof(buffer)/sizeof(char));
+                    break;
+                }
+                case 'c': {
+                    char value = va_arg(args, int);
+                    char buffer[2];
+                    buffer[0]=value;
+                    buffer[1]='\0';
+                    strncat(outstr,buffer,sizeof(buffer)/sizeof(char));
+                    break;
+                }
+                default:
+                    strncat(outstr,"%",1);
+                    char buffer[2];
+                    buffer[0]=*format;
+                    buffer[1]='\0';
+                    strncat(outstr,buffer,2);
+            }
+        } else {
+            char buffer[2];
+            buffer[0]=*format;
+            buffer[1]='\0';
+            strncat(outstr,buffer,2);
+        }
+    
+        format++;
+    }
+
+    va_end(args);
+    return outstr;
+}

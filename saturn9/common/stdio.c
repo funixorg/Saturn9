@@ -23,7 +23,7 @@ void printf(const char *format, ...) {
             switch (*format) {
                 case 'd': {
                     int value = va_arg(args, int);
-                    char buffer[128];
+                    char buffer[16];
                     itoa(value, buffer, 10);
                     printstr(buffer, get_foreground(), get_fontsize());
                     break;
@@ -35,7 +35,7 @@ void printf(const char *format, ...) {
                 }
                 case 'x': {
                     int value = va_arg(args, int);
-                    char buffer[128];
+                    char buffer[16];
                     itoa(value, buffer, 16);
                     printstr("0x", get_foreground(), get_fontsize());
                     printstr(buffer, get_foreground(), get_fontsize());
@@ -111,7 +111,7 @@ void printf_serial(const char *format, ...) {
             switch (*format) {
                 case 'd': {
                     int value = va_arg(args, int);
-                    char buffer[128];
+                    char buffer[16];
                     itoa(value, buffer, 10);
                     write_serial(buffer);
                     break;
@@ -123,7 +123,7 @@ void printf_serial(const char *format, ...) {
                 }
                 case 'x': {
                     int value = va_arg(args, int);
-                    char buffer[128];
+                    char buffer[16];
                     itoa(value, buffer, 16);
                     write_serial("0x");
                     write_serial(buffer);
@@ -150,6 +150,7 @@ void printf_serial(const char *format, ...) {
 
     va_end(args);
 }
+
 
 char *readline(char *prompt) {
     printf(prompt);

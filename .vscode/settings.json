@@ -19,7 +19,9 @@
         "pmm.h": "c",
         "terminal.h": "c",
         "stack.h": "c",
-        "mem.h": "c"
+        "mem.h": "c",
+        "initrd.h": "c",
+        "filesystem.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled"
 }

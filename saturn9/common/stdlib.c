@@ -42,7 +42,7 @@ void itoa(int num, char str[], int base) {
     reverse(str, i);
 }
 
-int atoi(const char *str) {
+int atoi(const char *str, unsigned base) {
     int result = 0;
 
     if (str[0] == '0' && (str[1] == 'x' || str[1] == 'X')) {
@@ -63,7 +63,7 @@ int atoi(const char *str) {
             break;
         }
 
-        result = result * 16 + value;
+        result = result * base + value;
         ++str;
     }
 

@@ -1,5 +1,6 @@
 from os import walk as _walk, system as _sys, name as _osname
 from configuration import *
+import ramfs
 import font
 
 
@@ -88,6 +89,7 @@ def build()->int:
         exit_code = _sys(cmd)
         if (exit_code != 0): return exit_code
     
+    ramfs.ramfs_generator()
     
     exit_code = limine_setup()
     if (exit_code != 0): return exit_code

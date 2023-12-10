@@ -6,6 +6,7 @@
 
 #define LIMINE_INTERNAL_MODULE_REQUIRED (1 << 0)
 
+char *read_rd(void *address, unsigned size);
 void initramdisk();
 
 #endif

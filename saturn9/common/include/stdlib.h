@@ -7,7 +7,7 @@
 #define MAX_SUBSTRINGS 50
 #define MAX_SUBSTRING_LENGTH 512
 
-int atoi(const char *str);
+int atoi(const char *str, unsigned base);
 void itoa(int num, char str[], int base);
 void reverse(char str[], int length);
 size_t strlen(const char *str);

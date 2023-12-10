@@ -19,7 +19,7 @@ class Directory:
         self.dirs:list[Directory]=[]
         self.files:list[File]=[]
         
-def parse_dir(path:str,base_path:str) -> (Directory, int):
+def parse_dir(path:str,base_path:str) -> Directory:
     global current_base
     
     directory = Directory(path.replace(base_path, "/"))
@@ -44,11 +44,11 @@ def parse_dir(path:str,base_path:str) -> (Directory, int):
     
     return directory
 
-def parse_tree(directories: list[Directory]):
+def parse_tree(directories: list[Directory])->None:
     global header
     global binary
     for directory in directories:
-        header+=f"<{directory.path}>[{directory.base};{directory.size}]"
+        header+=f"<{directory.path}>[{directory.base};{directory.size}]|{len(directory.files)}|"
         file_header=[]
         dir_header=""
         for file in directory.files:
@@ -56,10 +56,16 @@ def parse_tree(directories: list[Directory]):
             binary+=file.content
         header+=f"({'&'.join(file_header)})"
 
-def generator(path: str = "initramdir") -> None:
+def ramfs_generator(path: str = "initramdir") -> None:
+    global header
+    global binary
+    global current_base
+    
+    current_base = 0
+    header = ""
+    binary = b""
+    
     parse_tree([parse_dir(path,path)])
     header_size = len(header)+1 # Size+Newline
     open("isodir/initramfs", "wb").write((str(header_size)+"\n"+header).encode('utf-8')+b"\n"+binary)
-    print("[RFS] initramfs generated!")
-
-generator()
+    print("[RFS] Ramdisk generated!")

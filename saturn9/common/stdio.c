@@ -66,7 +66,7 @@ void printf(const char *format, ...) {
                 }
 
                 cvalue[i] = '\0';
-                set_foreground(atoi(cvalue));
+                set_foreground(atoi(cvalue, 16));
             } else {
                 putchar('#', get_foreground(), get_fontsize());
                 putchar(*format, get_foreground(), get_fontsize());
@@ -82,7 +82,7 @@ void printf(const char *format, ...) {
                     format++;
                 }
                 cvalue[i] = '\0';
-                set_background(atoi(cvalue));
+                set_background(atoi(cvalue, 16));
             } else {
                 putchar('#', get_foreground(), get_fontsize());
                 putchar(*format, get_foreground(), get_fontsize());

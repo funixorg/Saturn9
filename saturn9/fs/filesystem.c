@@ -163,6 +163,7 @@ char *fs_parse_rd(void *address, unsigned size) {
 
 
 char *read_chunk(File *file) {
+    if (!file->base_size.size) { return ""; }
     unsigned base = file->base_size.base+rdinfo.header_size+3; // Magic index addend
     unsigned size = file->base_size.size-1; // Size-1 = index
 

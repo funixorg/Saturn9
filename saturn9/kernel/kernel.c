@@ -92,7 +92,9 @@ void _start(void) {
     while (get_x_offset()>0) { delete_last(); }
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KEYBOARD\n");
 
-    rhea_proc("0x813 hello\n\"Hello World\"\n()");
+    char *content = read_path("/commands/clear.re");
+    if (content) { rhea_proc(content); }
+    else { printf_serial("FAIL!\n"); }
 
     terminal_init();
     /*for (;;) {

@@ -59,22 +59,24 @@ def parse_dir(path:str,base_path:str) -> Directory:
     
     return directory
 
-def parse_tree(directories: list[Directory])->None:
+def parse_tree(directories: list[Directory], iteration:int=0)->None:
     global header
     global binary
     for directory in directories:
-        header+=f"<{directory.name}>[{directory.base};{directory.size}]|{len(directory.files)}|"
+        header+=f"{chr(0x1)}{directory.name}{chr(0x2)}{chr(0x5)}{directory.base}{chr(0x1f)}{directory.size}{chr(0x6)}{chr(0x3)}{len(directory.files)}{chr(0x3)}{chr(0x4)}{len(directory.directories)}{chr(0x4)}"
         file_header=[]
         for file in directory.files:
-            file_header.append(f"<{file.path}>[{file.base};{file.size}]")
+            file_header.append(f"{chr(0x1)}{file.path}{chr(0x2)}{chr(0x5)}{file.base}{chr(0x1f)}{file.size}{chr(0x6)}")
             binary+=file.content
-        header+=f"({'&'.join(file_header)})"
-        header+="{"
+        header+=f"{chr(0x17)}{chr(0x11).join(file_header)}{chr(0x18)}"
+        header+=chr(0x19)
         for subdir in directory.directories:
-            parse_tree([subdir])
-            header+="="
+            parse_tree([subdir], iteration+1)
+            header+=chr(0x12)
         header=header[:-1]
-        header+="}"
+        header+=chr(0x15)
+    if (iteration==0):
+        header=header[:-1]
 
 def ramfs_generator(path: str = "initramdir") -> None:
     global header
@@ -91,4 +93,4 @@ def ramfs_generator(path: str = "initramdir") -> None:
     print("[RFS] Ramdisk generated!")
 
 
-ramfs_generator()
+if __name__ == "__main__": ramfs_generator()

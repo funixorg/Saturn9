@@ -16,7 +16,7 @@ char *parse_path() {
     char *buffer=memalloc(128);
     unsigned _i=0;
     f_advance(); // Skip <
-    while (rdinfo.current_char != '\0' && rdinfo.current_char != '>') {
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x2) {
         buffer[_i]=rdinfo.current_char;
         f_advance();
         _i++;
@@ -34,8 +34,8 @@ BaseSize parse_basesize() {
     unsigned _i=0;
     f_advance(); // Skip [
 
-    while (rdinfo.current_char != '\0' && rdinfo.current_char != ']') {
-        if (rdinfo.current_char==';') {
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x6) {
+        if (rdinfo.current_char==0x1f) {
             buffer[_i+1]='\0';
             base=atoi(buffer,10);
             _i=0;
@@ -64,7 +64,28 @@ unsigned parse_filecount() {
     unsigned _i=0;
     f_advance(); // Skip |
 
-    while (rdinfo.current_char != '\0' && rdinfo.current_char != '|') {
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x3) {
+        buffer[_i]=rdinfo.current_char;
+        _i++;
+        f_advance();
+    }
+    buffer[_i]='\0';
+
+    count=atoi(buffer,10);
+
+    free(buffer);
+
+    return count;
+}
+
+unsigned parse_dircount() {
+    char *buffer=memalloc(16);
+    unsigned count=0;
+    
+    unsigned _i=0;
+    f_advance(); // Skip #
+
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x4) {
         buffer[_i]=rdinfo.current_char;
         _i++;
         f_advance();
@@ -81,11 +102,11 @@ unsigned parse_filecount() {
 File parse_file() {
     File file;
 
-    while (rdinfo.current_char != '\0' && rdinfo.current_char != ')' && rdinfo.current_char != '&') {
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x18 && rdinfo.current_char != 0x11) {
         if (rdinfo.current_char == ' ' || rdinfo.current_char == '\n') {}
-        else if (rdinfo.current_char == '<') {
+        else if (rdinfo.current_char == 0x1) {
             file.path = parse_path();
-        } else if (rdinfo.current_char == '[') {
+        } else if (rdinfo.current_char == 0x5) {
             file.base_size = parse_basesize();
         }
         f_advance();
@@ -101,8 +122,8 @@ File *parse_files(unsigned file_count) {
 
     f_advance(); // Skip (
 
-    while (rdinfo.current_char != '\0' && rdinfo.current_char != ')') {
-        if (rdinfo.current_char == '&') {
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x18) {
+        if (rdinfo.current_char == 0x11) {
             _i++;
             f_advance(); // Skip &
         } else {
@@ -114,19 +135,45 @@ File *parse_files(unsigned file_count) {
     return files;
 }
 
-void process_rd_dir(Directory *directory) {
+Directory *parse_dirs(unsigned dirs_count) {
+    Directory *dirs=memalloc(dirs_count * sizeof(Directory));
+    Directory dir;
+    unsigned _i = 0;
+
+    f_advance(); // Skip (
+
+    while (rdinfo.current_char != '\0' && rdinfo.current_char != 0x15) {
+        if (rdinfo.current_char == 0x12) {
+            _i++;
+            f_advance(); // Skip &
+        } else {
+            parse_dir(&dir);
+            dirs[_i] = dir;
+        }
+    }
+
+    return dirs;
+}
+
+void parse_dir(Directory *directory) {
     if (rdinfo.current_char==' ' || rdinfo.current_char=='\n') {}
-    else if (rdinfo.current_char=='<') {
+    else if (rdinfo.current_char==0x1) {
         directory->path = parse_path();
     }
-    else if (rdinfo.current_char=='[') {
+    else if (rdinfo.current_char==0x5) {
         directory->base_size=parse_basesize();
     }
-    else if (rdinfo.current_char=='|') {
+    else if (rdinfo.current_char==0x3) {
         directory->file_count=parse_filecount();
     }
-    else if (rdinfo.current_char=='(') {
+    else if (rdinfo.current_char==0x4) {
+        directory->dir_count=parse_dircount();
+    }
+    else if (rdinfo.current_char==0x17) {
         directory->files=parse_files(directory->file_count);
+    }
+    else if (rdinfo.current_char==0x19) {
+        directory->directories=parse_dirs(directory->dir_count);
     }
     f_advance();
 }
@@ -149,22 +196,23 @@ char *fs_parse_rd(void *address, unsigned size) {
     }
     buffer[_i+1]='\0';
 
-    header_size=atoi(buffer, 10);
+    header_size=atoi(buffer, 10)+strlen(buffer)+1; // Header Size + HeaderSize_int length + newline
 
     free(buffer);
     
     rdinfo.header_size=header_size;
+    f_advance(); // Skip newline
     while (rdinfo.pos<header_size) {
-        process_rd_dir(&root_dir);
+        parse_dir(&root_dir);
     }
 
-    return rdinfo.content; // Needed to keep the source in stack
+    return rdinfo.content;
 }
 
 
 char *read_chunk(File *file) {
     if (!file->base_size.size) { return ""; }
-    unsigned base = file->base_size.base+rdinfo.header_size+3; // Magic index addend
+    unsigned base = file->base_size.base+rdinfo.header_size;
     unsigned size = file->base_size.size-1; // Size-1 = index
 
     char *buffer=memalloc(size);
@@ -185,9 +233,32 @@ File *find_file(Directory *directory, char *filename) {
     return NULL;
 }
 
+Directory *iterate_dir(Directory *directory, char *dirname) {
+    for (unsigned _i=0; _i<directory->dir_count; _i++) {
+        if (strcmp(directory->directories[_i].path,dirname)) {
+            return &(directory->directories[_i]);
+        }
+    }
+    return NULL;
+}
+
+
 Directory *find_dir(char *dirname) {
     if (strcmp(dirname,"/")) {
         return &root_dir;
+    }
+    else {
+        if (dirname[0]!='/') { return NULL; }
+        char **tokens = strsplit(dirname, '/');
+        Directory *current_dir=&root_dir;
+        for (unsigned _i=1; tokens[_i]; _i++) {
+            if (strcmp(tokens[_i], "")) { continue; }
+            current_dir=iterate_dir(current_dir, tokens[_i]);
+            if (!current_dir) { 
+                return NULL;
+            }
+        }
+        return current_dir;
     }
     return NULL;
 }
@@ -231,5 +302,35 @@ FileList *list_dir(char *dirname) {
         return file_list;
     }
 
+    return NULL;
+}
+
+char *read_path(char *full_path) {
+    unsigned slashcount=1;
+    
+    for (unsigned _i=0; full_path[_i]!='\0'; _i++) {
+        if (full_path[_i]=='/') {
+            slashcount++;
+        }
+    }
+
+    char **tokens = strsplit(full_path, '/');
+    char *file=memalloc(strlen(full_path));
+    Directory *current_dir=&root_dir;
+    for (unsigned _i=0; tokens[_i]; _i++) {
+        if (_i+1>=slashcount) { 
+            file=tokens[_i];
+            break;
+        }
+        if (strcmp(tokens[_i], "")) { continue; }
+        current_dir=iterate_dir(current_dir, tokens[_i]);
+        if (!current_dir) { 
+            printf_serial("HERE %s\n", tokens[_i]);
+            return NULL;
+        }
+    }
+
+    File *file_handle = find_file(current_dir, file);
+    if (file_handle) { return read_chunk(file_handle); }
     return NULL;
 }

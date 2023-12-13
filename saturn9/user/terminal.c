@@ -40,7 +40,7 @@ void execvp(char** tokens) {
 void shell() {
   char *line=readline(PROMPT);
   if (strlen(line)>0) {
-    char** tokens =str_split(line,' ');
+    char** tokens =tok_split(line,' ');
     execvp(tokens);
   }
 }

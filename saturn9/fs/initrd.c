@@ -42,11 +42,4 @@ void initramdisk() {
         unsigned memsize = rdrequest.response->modules[_i]->size;
         parse_rd(memaddr, memsize);
     }
-    //char *content = read_file("source2.txt");
-    //if (content) { printf_serial("CONTENT: %s\n", content); };
-    char *dirname="/";
-    FileList *dirlist = list_dir(dirname);
-    for (unsigned _i=0; _i<dirlist->file_count; _i++) {
-        printf_serial("%s = `%s`\n", dirlist->paths[_i], read_file(dirname, dirlist->paths[_i]));
-    }
 }

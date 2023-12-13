@@ -27,6 +27,7 @@ typedef struct Directory {
     char *path;
     File *files;
     unsigned file_count;
+    unsigned dir_count;
     BaseSize base_size;
     struct Directory *directories;
 } Directory;
@@ -38,7 +39,10 @@ typedef struct FileList {
 } FileList;
 
 char *fs_parse_rd(void *address, unsigned size);
+void parse_dir(Directory *directory);
+Directory *find_dir(char *dirname);
 char *read_file(char *dirname, char* filename);
 FileList *list_dir(char *dirname);
+char *read_path(char *full_path);
 
 #endif

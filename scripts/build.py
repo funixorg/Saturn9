@@ -1,4 +1,4 @@
-from os import walk as _walk, system as _sys, name as _osname
+from os import walk as _walk, system as _sys, name as _osname, popen as _popen
 from configuration import *
 import ramfs
 import font
@@ -51,8 +51,16 @@ def fonts():
 def setup()->None:
     _sys(f"mkdir -p {BIN_DIR}")
     _sys(f"mkdir -p {ISODIR}")
+    
+def line_counter()->int:
+    res = _popen(r'find . -name "*.c" -or -name "*.asm" -or -name "*.h" | xargs wc -l').read()
+    total = int(res.split("\n")[-2].strip().split(" ")[0])
+    return total
 
 def build()->int:
+    tlines = line_counter()
+    print(f"TOTAL OF: {tlines} LINES !!");
+    
     fonts()
     setup()
     
@@ -93,7 +101,7 @@ def build()->int:
     
     exit_code = limine_setup()
     if (exit_code != 0): return exit_code
-    
+        
     return 0
 
 

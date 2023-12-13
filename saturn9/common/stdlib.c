@@ -77,6 +77,7 @@ size_t strlen(const char *str) {
     return i;
 }
 
+
 char* strtok(char* str, const char* delim) {
     static char* saved_str = NULL;
     if (str != NULL) {
@@ -104,22 +105,7 @@ char* strtok(char* str, const char* delim) {
     return token_start;
 }
 
-char* strcpy(char* dest, const char* src) {
-    char* original_dest = dest;
-    while ((*dest++ = *src++) != '\0');
-    return original_dest;
-}
-
-char* strdup(const char* str) {
-    size_t length = strlen(str);
-    char* new_str = (char*)memalloc(length + 1);  
-    if (new_str != NULL) {
-        strcpy(new_str, str); 
-    }
-    return new_str;
-}
-
-char** str_split(char* a_str, const char a_delim) {
+char** tok_split(char* a_str, const char a_delim) {
     char** result    = 0;
     size_t count     = 0;
     char* tmp        = a_str;
@@ -154,6 +140,60 @@ char** str_split(char* a_str, const char a_delim) {
         *(result + idx) = 0;
     }
     return result;
+}
+
+char **strsplit(char *s, const char delim) {
+    char **tokens = memalloc(sizeof(s)*strlen(s));
+    char *buffer= memalloc(sizeof(s));
+
+    unsigned _si=0;
+    unsigned _ti=0;
+    unsigned _bi=0;
+    
+    while (s[_si]!='\0') {
+        if (s[_si]==delim) {
+            buffer[_bi]='\0';
+            char *newbuffer = memalloc(sizeof(s));
+            strcpy(newbuffer, buffer);
+            tokens[_ti]=newbuffer;
+
+            _bi=0;
+            _si++;
+            _ti++;
+            memset(buffer, 0, 0);
+            memset(newbuffer, 0, sizeof(s));
+        }
+        else {
+            buffer[_bi]=s[_si];
+            _bi++;
+            _si++;
+        }
+    }
+
+    buffer[_bi]='\0';
+    char *newbuffer = memalloc(sizeof(s));
+    strcpy(newbuffer, buffer);
+    tokens[_ti]=newbuffer;
+    tokens[_ti+1]=NULL;
+
+    return tokens;
+}
+
+
+
+char* strcpy(char* dest, const char* src) {
+    char* original_dest = dest;
+    while ((*dest++ = *src++) != '\0');
+    return original_dest;
+}
+
+char* strdup(const char* str) {
+    size_t length = strlen(str);
+    char* new_str = (char*)memalloc(length + 1);  
+    if (new_str != NULL) {
+        strcpy(new_str, str); 
+    }
+    return new_str;
 }
 
 void to_upper(char *lower, const char *str) {

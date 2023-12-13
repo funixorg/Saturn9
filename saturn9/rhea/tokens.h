@@ -12,10 +12,29 @@ enum TokenType {
     MINUS,
     MUL,
     DIV,
+    EQUAL,
+    NOT,
+    GREATER,
+    SMALLER,
 
 
     LPAREN,
-    RPAREN
+    RPAREN,
+    
+    AT,
+    COMMA,
+    COLON,
+    SEMICOLON,
+
+    LBRACE,
+    RBRACE,
+    LBRACKET,
+    RBRACKET,
+
+
+    EOS, // End of token stream,
+    WS,
+    ERR
 };
 
 typedef struct Token {

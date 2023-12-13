@@ -12,47 +12,51 @@ SymbolType symbols[] = {
     {'/', DIV},
     {'(', LPAREN},
     {')', RPAREN},
-				//{'<', }
+    {'@', AT},
+    {',', COLON},
+    {';', SEMICOLON},
+    {'{', LBRACE},
+    {'}', RBRACE},
+    {'[', LBRACKET},
+    {']', RBRACKET},
+    {'=', EQUAL},
+    {'!', NOT},
+    {'>', GREATER},
+    {'<', SMALLER},
+    
 };
 
 LexerStatus lexstat;
 
-void lexer_proc(char* source) {
-    lexstat.pos = 0;
-    lexstat.line=1;
+Token **lexer_proc(char *source) {
     lexstat.content = source;
-    lexstat.column=1;
+    lexstat.pos = 0;
+    lexstat.line = 1;
+    lexstat.column = 1;
+    lexstat.size = strlen(source);
     lexstat.current_char = source[lexstat.pos];
     printf_serial("Ready, Lexer, Go\n");
-    Token tokens[4028];
-    unsigned t_index=0;
-    while (lexstat.pos < strlen(lexstat.content)) {
-        tokens[t_index]=tok_processor();
-        t_index++;
-    }
-}
 
-void advance() {
-    if (lexstat.pos < strlen(lexstat.content)) {
-        lexstat.pos++;
-        lexstat.current_char = lexstat.content[lexstat.pos];
-    }
-}
+    Token **tokens = memalloc((lexstat.size + 1) * sizeof(Token*));
+    Token *ctok;
+    unsigned t_index = 0;
 
-Token tok_processor() {
-    if (is_number(lexstat.current_char)) {
-        return numeric_lex();
+    while (lexstat.pos < lexstat.size) {
+        ctok = tok_processor();
+        if (ctok->type != ERR && ctok->type != WS) {
+            tokens[t_index] = memalloc(sizeof(Token));
+            *(tokens[t_index]) = *ctok;
+            t_index++;
+        }
     }
-    else if (is_alpha(lexstat.current_char)) {
-        return identifier_lex();
-    }
-    else if (lexstat.current_char == '"') {
-        return string_lex();
-    }
-    else if (is_symbol(lexstat.current_char)) {
-        return symbol_lex();
-    }
-    else {advance();}
+
+    Token *eos = memalloc(sizeof(Token));
+    eos->type = EOS;
+    eos->value = memalloc(1);
+    eos->value[0] = '\0';
+    tokens[t_index] = eos;
+
+    return tokens;
 }
 
 
@@ -102,6 +106,58 @@ bool is_symbol(char ch) {
     return false;
 }
 
+
+void advance() {
+    lexstat.pos++;
+    if (lexstat.pos < lexstat.size) {
+        if (lexstat.current_char == '\n') {
+            lexstat.line++;
+            lexstat.column = 1;
+        } else {
+            lexstat.column++;
+        }
+
+        lexstat.current_char = lexstat.content[lexstat.pos];
+    } else {
+        lexstat.current_char = '\0';
+    }
+}
+
+
+Token *tok_processor() {
+    if (is_number(lexstat.current_char)) {
+        return numeric_lex();
+    }
+    else if (lexstat.current_char == '"') {
+        return string_lex();
+    }
+    else if (is_alpha(lexstat.current_char)) {
+        return identifier_lex();
+    }
+    else if (is_symbol(lexstat.current_char)) {
+        return symbol_lex();
+    }
+    else {
+        if (lexstat.current_char == ' ' || lexstat.current_char == '\t' || lexstat.current_char == '\n' || lexstat.current_char == 0x1A) {
+            advance();
+        }
+        else {
+            printf_serial("Unrecognized character: `%c` at %d (ascii: %d)\n", lexstat.current_char, lexstat.pos, (int)lexstat.current_char);
+            advance();
+            Token *terr=NULL;
+            terr = memalloc(sizeof(Token));
+            terr->type=ERR;
+            terr->value="\0";
+            return terr;
+        }
+    }
+    Token *tws=NULL;
+    tws = memalloc(sizeof(Token));
+    tws->type=WS;
+    tws->value=" ";
+    return tws;
+}
+
 enum TokenType symeqtok(char ch) {
     for (unsigned _i=0;_i<sizeof(symbols)/sizeof(SymbolType);_i++) {
         if (ch==symbols[_i].symbol) {
@@ -111,11 +167,11 @@ enum TokenType symeqtok(char ch) {
     return PLUS;
 }
 
-Token numeric_lex() {
+Token *numeric_lex() {
     char *value=memalloc(64);
     unsigned _i=0;
     int bis_hex=0;
-    while (lexstat.pos < strlen(lexstat.content) && (is_number(lexstat.current_char) || is_hex(lexstat.current_char))) {
+    while (lexstat.pos < lexstat.size && (is_number(lexstat.current_char) || is_hex(lexstat.current_char))) {
         if ( is_hex(lexstat.current_char) ) { bis_hex=1; }
         value[_i]=lexstat.current_char;
         advance();
@@ -124,59 +180,66 @@ Token numeric_lex() {
     }
     value[_i]='\0';
 
-    Token ntok;
-    if (!bis_hex) { ntok.type = INTEGER; }
-    else { ntok.type = HEXINT; }
-    ntok.value = value;
-    free(value);
+    Token *ntok = NULL;
+    ntok = memalloc(sizeof(Token));
+    if (!bis_hex) { ntok->type = INTEGER; }
+    else { ntok->type = HEXINT; }
+    ntok->value = value;
     printf_serial("INT/HEX: %s\n", value);
     return ntok;
 }
 
 
-Token identifier_lex() {
+Token *identifier_lex() {
     char *value=memalloc(256);
     unsigned _i=0;
-    while (lexstat.pos < strlen(lexstat.content) && is_alpha(lexstat.current_char)) {
+    while (lexstat.pos < lexstat.size && is_alpha(lexstat.current_char)) {
         value[_i]=lexstat.current_char;
         advance();
         _i++;
     }
+    value[_i]='\0';
     printf_serial("IDENTIFIER: %s\n", value);
-    Token itok;
-    itok.type=IDENTIFIER;
-    itok.value=value;
-    free(value);
+    Token *itok=NULL;
+    itok = memalloc(sizeof(Token));
+    itok->type=IDENTIFIER;
+    itok->value=value;
     return itok;
 }
 
-Token string_lex() {
+Token *string_lex() {
     char *value=memalloc(256);
     unsigned _i=0;
     advance(); // Skip quote
-    while (lexstat.pos < strlen(lexstat.content) && lexstat.current_char != '"') {
+    while (lexstat.pos < lexstat.size && lexstat.current_char != '"') {
         value[_i]=lexstat.current_char;
         advance();
         _i++;
     }
     advance(); // Skip quote
+    value[_i]='\0';
     printf_serial("STRING: \"%s\"\n", value);
 
-    Token stok;
-    stok.type=STRING;
-    stok.value=value;
-    free(value);
+    Token *stok=NULL;
+    stok = memalloc(sizeof(Token));
+    stok->type=STRING;
+    stok->value=value;
     return stok;
 }
 
 
-Token symbol_lex() {
-    Token stok;
-    stok.value=memalloc(2);
-    stok.value[0]=lexstat.current_char;
-    stok.value[1]='\0';
-    stok.type=symeqtok(lexstat.current_char);
+Token *symbol_lex() {
+    Token *stok=NULL;
+    stok = memalloc(sizeof(Token));
+    // Someway the older way to do this was replacing the last source char with the first lexed 
+    // IDK HOW TO FIX THIS SO THIS IS JUST A WORKAROUND
+    // the workaround is being done by allocating double the size of the source
+
+    stok->value=memalloc(2);
+    stok->value[0]=lexstat.current_char;
+    stok->value[1]='\0';
+    stok->type=symeqtok(lexstat.current_char);
     advance();
-    printf_serial("SYMBOL: %s\n", stok.value);
+    printf_serial("SYMBOL: %s\n", stok->value);
     return stok;
 }

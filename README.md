@@ -27,8 +27,8 @@
 - [x] PS/2 Keyboard
 - [x] GDT
 - [ ] TSS (may ignore for now)
-- [ ] Filesystem/VFS
-- [ ] Initramfs
+- [x] Filesystem/VFS
+- [x] Initramfs
 - [ ] IO libc
 - [ ] Direct Kernel Access Programming Language
 - [ ] Mouse
@@ -37,4 +37,4 @@
 
 <h1 align="center">Preview</h1>
 
-![Reference screenshot](assets/s9prev1.png)
+![Reference screenshot](assets/s9previewf.png)

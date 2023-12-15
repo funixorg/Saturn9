@@ -143,39 +143,56 @@ char** tok_split(char* a_str, const char a_delim) {
 }
 
 char **strsplit(char *s, const char delim) {
-    char **tokens = memalloc(sizeof(s)*strlen(s));
-    char *buffer= memalloc(sizeof(s));
+    char **tokens = memalloc(sizeof(s) * strlen(s));
+    char *buffer = memalloc(sizeof(s));
 
-    unsigned _si=0;
-    unsigned _ti=0;
-    unsigned _bi=0;
-    
-    while (s[_si]!='\0') {
-        if (s[_si]==delim) {
-            buffer[_bi]='\0';
+    unsigned _si = 0;
+    unsigned _ti = 0;
+    unsigned _bi = 0;
+
+    if (s[0]==delim) {
+        buffer[0] = delim;
+        buffer[1] = '\0';
+        char *newbuffer = memalloc(sizeof(s));
+        strcpy(newbuffer, buffer);
+        tokens[_ti] = newbuffer;
+
+        _bi = 0;
+        _si++;
+        _ti++;
+        free(buffer);
+        memset(buffer, 0, sizeof(buffer));
+        memset(newbuffer, 0, sizeof(s));
+    }
+
+    while (s[_si] != '\0') {
+        if (s[_si] == delim) {
+            buffer[_bi] = '\0';
             char *newbuffer = memalloc(sizeof(s));
             strcpy(newbuffer, buffer);
-            tokens[_ti]=newbuffer;
+            tokens[_ti] = newbuffer;
 
-            _bi=0;
+            _bi = 0;
             _si++;
             _ti++;
-            memset(buffer, 0, 0);
+            free(buffer);
+            memset(buffer, 0, sizeof(buffer));
             memset(newbuffer, 0, sizeof(s));
-        }
-        else {
-            buffer[_bi]=s[_si];
+        } else {
+            buffer[_bi] = s[_si];
             _bi++;
             _si++;
         }
     }
 
-    buffer[_bi]='\0';
+    buffer[_bi] = '\0';
     char *newbuffer = memalloc(sizeof(s));
     strcpy(newbuffer, buffer);
-    tokens[_ti]=newbuffer;
-    tokens[_ti+1]=NULL;
+    tokens[_ti] = newbuffer;
+    free(buffer);
+    tokens[_ti + 1] = NULL;
 
+    free(tokens);
     return tokens;
 }
 
@@ -283,12 +300,12 @@ char* intoa(int i, char b[]){
         i *= -1;
     }
     int shifter = i;
-    do{ //Move to where representation ends
+    do{ 
         ++p;
         shifter = shifter/10;
     }while(shifter);
     *p = '\0';
-    do{ //Move back, inserting digits as u go
+    do{ 
         *--p = digit[i%10];
         i = i/10;
     }while(i);

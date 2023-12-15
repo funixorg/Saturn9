@@ -4,7 +4,7 @@ import struct
 
 current_base = 0
 
-fh_w = open("isodir/initramfs", "wb")
+fh_w = open("isodir/ramdisk", "wb")
 binary = b""
 
 class File:
@@ -70,6 +70,8 @@ def parse_tree(directory: Directory, iteration: int = 0) -> None:
     global binary
 
     files_header = []
+    dirs_header=[]
+    
     for file in directory.files:
         file_struct = struct.pack(
             "64sQQ", file.name.encode("utf-8"), file.base, file.size
@@ -77,14 +79,18 @@ def parse_tree(directory: Directory, iteration: int = 0) -> None:
         files_header.append(file_struct)
         data = open(file.path, "rb").read()
         binary+=data
+    for subdir in directory.directories:
+        dir_header = parse_tree(subdir)
+        dirs_header.append(dir_header)
 
     files_header = b"".join(files_header)
-
+    dirs_header = b"".join(dirs_header)
+    
     dir_header = struct.pack(
-        "32sQQl", directory.name.encode("utf-8"), directory.base, directory.size, len(directory.files)
+        "32sQQii", directory.name.encode("utf-8"), directory.base, directory.size, len(directory.files), len(directory.directories)
     )
 
-    header = dir_header + files_header
+    header = dir_header + files_header + dirs_header
     return header
 
 
@@ -102,10 +108,15 @@ def ramfs_generator(path: str = "initramdir") -> None:
     header_size = len(header)
     
     heading = struct.pack(f"i{header_size}s", header_size, header)
+    
+    sz, _ = struct.unpack(f"i{header_size}s", heading)
+    
 
     fh_w.write(heading+binary)
+    
+    fh_w.close()
 
-    print("[RFS] Ramdisk generated!")
+    print(f"[RFS] Ramdisk generated! Header = {header_size} bytes; Binary = {len(binary)} bytes")
 
 if __name__ == "__main__":
     ramfs_generator()

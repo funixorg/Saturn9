@@ -93,9 +93,13 @@ void _start(void) {
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KEYBOARD\n");
 
     //char *content = read_path("/commands/clear.re");
-    FileList *files = list_dir("/img/");
+    /*FileList *files = list_dir("/");
     for (unsigned _i=0; _i<files->file_count; _i++) {
         printf_serial("PTH: %s\n", files->paths[_i]);
+    }*/
+    char *content = read_path("/source2.txt");
+    if (content) {
+        printf_serial("CONT: %s\n", content);
     }
     //if (content) { rhea_proc(content); }
     //else { printf_serial("FAIL!\n"); }

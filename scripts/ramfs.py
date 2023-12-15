@@ -1,15 +1,18 @@
 import os
+import mimas
+import struct
 
 current_base = 0
-header = ""
+
+fh_w = open("isodir/initramfs", "wb")
 binary = b""
 
 class File:
-    def __init__(self, path:str):
+    def __init__(self, path:str, name:str):
         self.path:str=path
         self.base:int=0
         self.size:int=0
-        self.content:bytes=b""
+        self.name:str=name
 
 class Directory:
     def __init__(self, path:str, name:str):
@@ -38,10 +41,14 @@ def parse_dir(path:str,base_path:str) -> Directory:
         relative_path = os.path.join(path, item)
         
         if os.path.isfile(relative_path):
-            c_file = File(item)
+            ext=item.split(".")[-1]
+            if (ext == "mas"): continue
+            if (ext in ["png", "jpeg", "jpg"]):
+                mimas.convert_image(relative_path)
+                item='.'.join(item.split(".")[:-1]+["mas"])
+            c_file = File(relative_path, item)
             c_file.base=current_base
-            c_file.content = open(relative_path, "rb").read()
-            c_file.size = len(c_file.content)
+            c_file.size = os.path.getsize(relative_path)
             current_base+= c_file.size
             directory.files.append(c_file)
             
@@ -59,38 +66,46 @@ def parse_dir(path:str,base_path:str) -> Directory:
     
     return directory
 
-def parse_tree(directories: list[Directory], iteration:int=0)->None:
-    global header
+def parse_tree(directory: Directory, iteration: int = 0) -> None:
     global binary
-    for directory in directories:
-        header+=f"{chr(0x1)}{directory.name}{chr(0x2)}{chr(0x5)}{directory.base}{chr(0x1f)}{directory.size}{chr(0x6)}{chr(0x3)}{len(directory.files)}{chr(0x3)}{chr(0x4)}{len(directory.directories)}{chr(0x4)}"
-        file_header=[]
-        for file in directory.files:
-            file_header.append(f"{chr(0x1)}{file.path}{chr(0x2)}{chr(0x5)}{file.base}{chr(0x1f)}{file.size}{chr(0x6)}")
-            binary+=file.content
-        header+=f"{chr(0x17)}{chr(0x11).join(file_header)}{chr(0x18)}"
-        header+=chr(0x19)
-        for subdir in directory.directories:
-            parse_tree([subdir], iteration+1)
-            header+=chr(0x12)
-        header=header[:-1]
-        header+=chr(0x15)
-    if (iteration==0):
-        header=header[:-1]
+
+    files_header = []
+    for file in directory.files:
+        file_struct = struct.pack(
+            "64sQQ", file.name.encode("utf-8"), file.base, file.size
+        )  # size = 80
+        files_header.append(file_struct)
+        data = open(file.path, "rb").read()
+        binary+=data
+
+    files_header = b"".join(files_header)
+
+    dir_header = struct.pack(
+        "32sQQl", directory.name.encode("utf-8"), directory.base, directory.size, len(directory.files)
+    )
+
+    header = dir_header + files_header
+    return header
+
 
 def ramfs_generator(path: str = "initramdir") -> None:
-    global header
-    global binary
-    global current_base
-    
+    global fh_w, binary, current_base
+    binary=b""
+
+    fh_w.seek(0, 0)
+    fh_w.truncate()
+
     current_base = 0
-    header = ""
-    binary = b""
+
+    header = parse_tree(parse_dir(path, path))
+
+    header_size = len(header)
     
-    parse_tree([parse_dir(path,path)])
-    header_size = len(header)+1 # Size+Newline
-    open("isodir/initramfs", "wb").write((str(header_size)+"\n"+header).encode('utf-8')+b"\n"+binary)
+    heading = struct.pack(f"i{header_size}s", header_size, header)
+
+    fh_w.write(heading+binary)
+
     print("[RFS] Ramdisk generated!")
 
-
-if __name__ == "__main__": ramfs_generator()
+if __name__ == "__main__":
+    ramfs_generator()

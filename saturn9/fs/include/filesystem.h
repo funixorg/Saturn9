@@ -6,7 +6,6 @@
 typedef struct RamDisk {
     char current_char;
     unsigned pos;
-    char *content;
     unsigned header_size;
     unsigned bin_size;
     void *address;
@@ -38,7 +37,7 @@ typedef struct FileList {
     unsigned file_count;
 } FileList;
 
-char *fs_parse_rd(void *address, unsigned size);
+void fs_parse_rd(void *address, unsigned size);
 void parse_dir(Directory *directory);
 Directory *find_dir(char *dirname);
 char *read_file(char *dirname, char* filename);

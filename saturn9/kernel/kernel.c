@@ -92,9 +92,13 @@ void _start(void) {
     while (get_x_offset()>0) { delete_last(); }
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KEYBOARD\n");
 
-    char *content = read_path("/commands/clear.re");
-    if (content) { rhea_proc(content); }
-    else { printf_serial("FAIL!\n"); }
+    //char *content = read_path("/commands/clear.re");
+    FileList *files = list_dir("/img/");
+    for (unsigned _i=0; _i<files->file_count; _i++) {
+        printf_serial("PTH: %s\n", files->paths[_i]);
+    }
+    //if (content) { rhea_proc(content); }
+    //else { printf_serial("FAIL!\n"); }
 
     terminal_init();
     /*for (;;) {

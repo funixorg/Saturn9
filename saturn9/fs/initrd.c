@@ -19,20 +19,15 @@ struct limine_module_request rdrequest = {
     .internal_modules = &ramdisk
 };
 
-
-char *read_rd(void *address, unsigned size) {
-    char *buffer=memalloc(size+1);
+char read_rd(void *address, unsigned offset) {
     char *ptr = (char *)address;
-    for (unsigned _i = 0; _i < size; _i++) {
-        buffer[_i] = ptr[_i];
-    }
-    buffer[size] = '\0';
-    return buffer;
+    char rbyte = ptr[offset];
+    return rbyte;
 }
 
 
-char *parse_rd(void *address, unsigned size) {
-    return fs_parse_rd(address, size);
+void parse_rd(void *address, unsigned size) {
+    fs_parse_rd(address, size);
 }
 
 

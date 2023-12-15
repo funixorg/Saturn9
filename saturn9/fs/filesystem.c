@@ -9,7 +9,7 @@ Directory root_dir;
 
 void f_advance() {
     rdinfo.pos++;
-    rdinfo.current_char=rdinfo.content[rdinfo.pos];
+    rdinfo.current_char=read_rd(rdinfo.address, rdinfo.pos);
 }
 
 char *parse_path() {
@@ -179,12 +179,11 @@ void parse_dir(Directory *directory) {
 }
 
 
-char *fs_parse_rd(void *address, unsigned size) {
+void fs_parse_rd(void *address, unsigned size) {
     rdinfo.pos=0;
-    rdinfo.content=read_rd(address,size);
-    rdinfo.current_char=rdinfo.content[rdinfo.pos];
-    rdinfo.bin_size=size;
     rdinfo.address=address;
+    rdinfo.current_char=read_rd(rdinfo.address, rdinfo.pos);
+    rdinfo.bin_size=size;
 
     unsigned header_size=0;
     char *buffer=memalloc(16);
@@ -205,8 +204,6 @@ char *fs_parse_rd(void *address, unsigned size) {
     while (rdinfo.pos<header_size) {
         parse_dir(&root_dir);
     }
-
-    return rdinfo.content;
 }
 
 
@@ -218,7 +215,7 @@ char *read_chunk(File *file) {
     char *buffer=memalloc(size);
 
     for (unsigned _i=0; _i<=size; _i++) {
-        buffer[_i]=rdinfo.content[base+_i];
+        buffer[_i]=read_rd(rdinfo.address, base+_i);
     }
 
     return buffer;

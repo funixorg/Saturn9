@@ -43,5 +43,6 @@ Directory *find_dir(char *dirname);
 char *read_file(char *dirname, char* filename);
 FileList *list_dir(char *dirname);
 char *read_path(char *full_path);
+File *get_file(char *full_path);
 
 #endif

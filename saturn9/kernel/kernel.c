@@ -15,7 +15,7 @@
 #include <pmm.h>
 #include <rhea.h>
 #include <initrd.h>
-
+#include <mimas.h>
 
 void _start(void) {
     sys_init_fpu();
@@ -97,10 +97,9 @@ void _start(void) {
     for (unsigned _i=0; _i<files->file_count; _i++) {
         printf_serial("PTH: %s\n", files->paths[_i]);
     }*/
-    char *content = read_path("/source2.txt");
-    if (content) {
-        printf_serial("CONT: %s\n", content);
-    }
+    File *file_handle = get_file("/img/saturn.mas");
+    display_mimimg(file_handle);
+
     //if (content) { rhea_proc(content); }
     //else { printf_serial("FAIL!\n"); }
 

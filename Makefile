@@ -14,7 +14,7 @@ endif
 all: docker
 
 build:
-	python3 -u scripts/build.py
+	$(PYTHON) -u scripts/build.py
 
 docker:
 	docker build -t saturn9-env .

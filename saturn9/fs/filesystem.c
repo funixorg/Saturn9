@@ -187,6 +187,40 @@ FileList *list_dir(char *dirname) {
     return NULL;
 }
 
+File *get_file(char *full_path) {
+    unsigned slashcount=0;
+    
+    for (unsigned _i=0; full_path[_i]!='\0'; _i++) {
+        if (full_path[_i]=='/') {
+            slashcount++;
+        }
+    }
+
+    char *path=memalloc(strlen(full_path));
+    for (unsigned _i=1; _i<=strlen(full_path); _i++) {
+        path[_i-1] = full_path[_i];
+    }
+
+    char **tokens = tok_split(path, '/');
+    char *file=memalloc(strlen(full_path));
+    Directory *current_dir=&root_dir;
+    for (unsigned _i=0; tokens[_i]; _i++) {
+        if (_i+1>=slashcount) { 
+            file=tokens[_i];
+            break;
+        }
+        if (strcmp(tokens[_i], "")) { continue; }
+        current_dir=iterate_dir(current_dir, tokens[_i]);
+        if (!current_dir) { 
+            return NULL;
+        }
+    }
+
+    File *file_handle = find_file(current_dir, file);
+    if (file_handle) { return file_handle; }
+    return NULL;
+}
+
 char *read_path(char *full_path) {
     unsigned slashcount=0;
     

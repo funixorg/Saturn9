@@ -20,6 +20,7 @@ INCLUDE_DIRS = [
     SRCPATH+"user/include/",
     SRCPATH+"pit/include/",
     SRCPATH+"rhea/",
+    SRCPATH+"mimas/include/",
 ]
 
 CXX = "gcc"

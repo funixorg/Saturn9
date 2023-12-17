@@ -34,15 +34,19 @@ typedef struct Directory {
 
 typedef struct FileList {
     char **paths;
+    char **dirs;
     unsigned file_count;
+    unsigned dir_count;
 } FileList;
 
-void fs_parse_rd(void *address, unsigned size);
-void parse_dir(Directory *directory);
-Directory *find_dir(char *dirname);
-char *read_file(char *dirname, char* filename);
-FileList *list_dir(char *dirname);
-char *read_path(char *full_path);
-File *get_file(char *full_path);
+void FS_parse_rd(void *address, unsigned size);
+void FS_parse_dir(Directory *directory);
+Directory *VFS_find_dir(char *dirname);
+char *VFS_read_file(char *dirname, char* filename);
+FileList *VFS_list_dir(char *dirname);
+char *VFS_read_path(char *full_path);
+File *VFS_get_file(char *full_path);
+void *FS_get_rdaddr();
+unsigned FS_get_hsize();
 
 #endif

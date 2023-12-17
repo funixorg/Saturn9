@@ -26,15 +26,16 @@
 - [x] Interrupts
 - [x] PS/2 Keyboard
 - [x] GDT
-- [ ] TSS (may ignore for now)
 - [x] Filesystem/VFS
 - [x] Initramfs
-- [ ] IO libc
+- [x] Image format
 - [ ] Direct Kernel Access Programming Language
+- [ ] TSS
+- [ ] Threading
 - [ ] Mouse
 - [ ] GUI
 
 
 <h1 align="center">Preview</h1>
 
-![Reference screenshot](assets/s9previewf.png)
+![Reference screenshot](assets/s9prev.png)

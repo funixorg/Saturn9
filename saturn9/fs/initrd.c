@@ -26,7 +26,7 @@ char read_rd_c(void *address, unsigned offset) {
 }
 
 void parse_rd(void *address, unsigned size) {
-    fs_parse_rd(address, size);
+    FS_parse_rd(address, size);
 }
 
 

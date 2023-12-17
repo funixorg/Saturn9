@@ -10,28 +10,13 @@
 
 extern struct limine_framebuffer_request framebuffer_request;
 
-void draw_pixel(unsigned x, unsigned y, unsigned color);
-void draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned scale);
-void delete_last();
-void putchar(char character, unsigned color, unsigned scale);
-void draw_screen(unsigned color);
-void framebuffer_init();
+void GP_draw_pixel(unsigned x, unsigned y, unsigned color);
+void GP_draw_char(unsigned x, unsigned y, char character, unsigned color, unsigned scale);
+void GP_draw_rectangle(unsigned x, unsigned y, unsigned width, unsigned height, unsigned color);
+void GP_draw_screen(unsigned color);
+void GP_framebuffer_init();
 
-void draw_cursor();
-void delete_cursor();
-
-void set_x_offset(unsigned value);
-void set_y_offset(unsigned value);
-unsigned get_x_offset();
-unsigned get_y_offset();
-void set_background(unsigned value);
-unsigned get_background();
-void set_foreground(unsigned value);
-unsigned get_foreground();
-void set_fontsize(unsigned value);
-unsigned get_fontsize();
-
-void printstr(const char* string, unsigned color, unsigned scale);
-void print_at(const char* string, unsigned x, unsigned y, unsigned color, unsigned scale);
+unsigned GP_get_screen_width();
+unsigned GP_get_screen_height();
 
 #endif

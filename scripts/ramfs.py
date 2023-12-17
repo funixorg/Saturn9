@@ -46,6 +46,7 @@ def parse_dir(path:str,base_path:str) -> Directory:
             if (ext in ["png", "jpeg", "jpg"]):
                 mimas.convert_image(relative_path)
                 item='.'.join(item.split(".")[:-1]+["mas"])
+                relative_path='.'.join(relative_path.split(".")[:-1]+["mas"])
             c_file = File(relative_path, item)
             c_file.base=current_base
             c_file.size = os.path.getsize(relative_path)

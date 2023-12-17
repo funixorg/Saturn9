@@ -3,13 +3,14 @@
 #include <serial.h>
 #include <stdarg.h>
 #include <graphics.h>
+#include <terminal.h>
 #include <keyboard.h>
 #include <mem.h>
 #include <pit.h>
 
 void printf(const char *format, ...) {
-    unsigned fg = get_foreground();
-    unsigned bg = get_background();
+    unsigned fg = TERM_get_foreground();
+    unsigned bg = TERM_get_background();
 
     va_list args;
     va_start(args, format);
@@ -25,20 +26,20 @@ void printf(const char *format, ...) {
                     int value = va_arg(args, int);
                     char buffer[16];
                     itoa(value, buffer, 10);
-                    printstr(buffer, get_foreground(), get_fontsize());
+                    TERM_printstr(buffer, TERM_get_foreground(), TERM_get_fontsize());
                     break;
                 }
                 case 's': {
                     const char *str = va_arg(args, const char *);
-                    printstr(str, get_foreground(), get_fontsize());
+                    TERM_printstr(str, TERM_get_foreground(), TERM_get_fontsize());
                     break;
                 }
                 case 'x': {
                     int value = va_arg(args, int);
                     char buffer[16];
                     itoa(value, buffer, 16);
-                    printstr("0x", get_foreground(), get_fontsize());
-                    printstr(buffer, get_foreground(), get_fontsize());
+                    TERM_printstr("0x", TERM_get_foreground(), TERM_get_fontsize());
+                    TERM_printstr(buffer, TERM_get_foreground(), TERM_get_fontsize());
                     break;
                 }
                 case 'c': {
@@ -46,12 +47,12 @@ void printf(const char *format, ...) {
                     char buffer[2];
                     buffer[0]=value;
                     buffer[1]='\0';
-                    printstr(buffer, get_foreground(), get_fontsize());
+                    TERM_printstr(buffer, TERM_get_foreground(), TERM_get_fontsize());
                     break;
                 }
                 default:
-                    putchar('%', get_foreground(), get_fontsize());
-                    putchar(*format, get_foreground(), get_fontsize());
+                    TERM_putchar('%', TERM_get_foreground(), TERM_get_fontsize());
+                    TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
 
             }
         } else if (*format == '#') {
@@ -66,10 +67,10 @@ void printf(const char *format, ...) {
                 }
 
                 cvalue[i] = '\0';
-                set_foreground(atoi(cvalue, 16));
+                TERM_set_foreground(atoi(cvalue, 16));
             } else {
-                putchar('#', get_foreground(), get_fontsize());
-                putchar(*format, get_foreground(), get_fontsize());
+                TERM_putchar('#', TERM_get_foreground(), TERM_get_fontsize());
+                TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
             }
         } else if (*format == '$') {
             format++;
@@ -82,13 +83,13 @@ void printf(const char *format, ...) {
                     format++;
                 }
                 cvalue[i] = '\0';
-                set_background(atoi(cvalue, 16));
+                TERM_set_background(atoi(cvalue, 16));
             } else {
-                putchar('#', get_foreground(), get_fontsize());
-                putchar(*format, get_foreground(), get_fontsize());
+                TERM_putchar('#', TERM_get_foreground(), TERM_get_fontsize());
+                TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
             }
         } else {
-            putchar(*format, get_foreground(), get_fontsize());
+            TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
         }
 
         format++;
@@ -96,8 +97,8 @@ void printf(const char *format, ...) {
 
     va_end(args);
 
-    set_foreground(fg);
-    set_background(bg);
+    TERM_set_foreground(fg);
+    TERM_set_background(bg);
 }
 
 void printf_serial(const char *format, ...) {
@@ -152,8 +153,7 @@ void printf_serial(const char *format, ...) {
 }
 
 
-char *readline(char *prompt) {
-    printf(prompt);
+char *readline() {
     clearbuffer();
     while (readkey() != '\n') {}
     char *buffer=readbuffer();
@@ -162,6 +162,6 @@ char *readline(char *prompt) {
 }
 
 void clear_screen() {
-  draw_screen(get_background());
-  set_y_offset(DEFAULT_Y);
+  GP_draw_screen(TERM_get_background());
+  TERM_set_ypos(DEFAULT_Y);
 }

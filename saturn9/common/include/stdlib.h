@@ -9,8 +9,10 @@
 
 int atoi(const char *str, unsigned base);
 void itoa(int num, char str[], int base);
+uint32_t rgbtohex(unsigned int R, unsigned int G, unsigned int B);
 void reverse(char str[], int length);
 size_t strlen(const char *str);
+char* strdup(const char* str);
 char **strsplit(char *s, const char delim);
 char** tok_split(char* a_str, const char a_delim);
 void to_upper(char *lower, const char *str);

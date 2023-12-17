@@ -8,6 +8,7 @@
 #include <pic.h>
 #include <idt.h>
 #include <graphics.h>
+#include <terminal.h>
 
 KeyboardInfo keyboard_info;
 unsigned layout_size;
@@ -56,12 +57,12 @@ void parse_key(uint8_t key, char layout[], char shift_layout[]) {
 
                 if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex > 0) {
                     keyboard_info.bindex--;
-                    putchar(keyboard_info.key, get_foreground(), get_fontsize());
+                    TERM_putchar(keyboard_info.key, TERM_get_foreground(), TERM_get_fontsize());
                 }
                 else if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex <= 0) {}
                 else {
                     keyboard_info.bindex++;
-                    putchar(keyboard_info.key, get_foreground(), get_fontsize());
+                    TERM_putchar(keyboard_info.key, TERM_get_foreground(), TERM_get_fontsize());
                 }
 
                 // Null-terminate the buffer
@@ -103,7 +104,7 @@ char *readbuffer() {
 
 __attribute__((interrupt)) void keyboard_handler(void *)
 {
-    if (keyboard_info.key) { draw_cursor(); }
+    if (keyboard_info.key) { TERM_draw_cursor(); }
     uint8_t data = inb(PS2_DATA);
 
     if (!data) {
@@ -112,7 +113,7 @@ __attribute__((interrupt)) void keyboard_handler(void *)
     }
 
     if (data < 0x80) {
-        if (keyboard_info.key) { delete_cursor(); }
+        if (keyboard_info.key) { TERM_delete_cursor(); }
         parse_key(data, en_US_layout, en_US_shift_layout);
         keyboard_info.buffer[keyboard_info.bindex] = keyboard_info.key;
     } else { parse_release(data); }

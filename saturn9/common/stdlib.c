@@ -42,6 +42,10 @@ void itoa(int num, char str[], int base) {
     reverse(str, i);
 }
 
+uint32_t rgbtohex(unsigned int R, unsigned int G, unsigned int B) {
+    return (R << 16) | (G << 8) | B;
+}
+
 int atoi(const char *str, unsigned base) {
     int result = 0;
 
@@ -167,6 +171,11 @@ char **strsplit(char *s, const char delim) {
 
     while (s[_si] != '\0') {
         if (s[_si] == delim) {
+            if (strcmp(buffer, "")) {
+                _si++;
+                _bi=0;
+                continue;
+            }
             buffer[_bi] = '\0';
             char *newbuffer = memalloc(sizeof(s));
             strcpy(newbuffer, buffer);

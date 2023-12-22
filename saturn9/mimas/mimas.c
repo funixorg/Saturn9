@@ -31,11 +31,11 @@ uint8_t MIM_read_uint8(unsigned int_size) {
     return *(uint8_t*)buffer;
 }
 
-void MIM_display_mimimg(File *file, unsigned xpos, unsigned ypos) {
+void MIM_display_mimimg(File *file, unsigned xpos, unsigned ypos, unsigned reducing_scale, unsigned enlarging_scale) {
     pos=0;
     image_file=file;
-    uint32_t width = MIM_read_uint32(8);
-    uint32_t height = MIM_read_uint32(8);
+    uint32_t width = (MIM_read_uint32(8) / reducing_scale) *enlarging_scale;
+    uint32_t height = (MIM_read_uint32(8) / reducing_scale) * enlarging_scale;
 
     unsigned red;
     unsigned green;

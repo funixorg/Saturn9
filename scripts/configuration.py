@@ -21,6 +21,7 @@ INCLUDE_DIRS = [
     SRCPATH+"pit/include/",
     SRCPATH+"rhea/",
     SRCPATH+"mimas/include/",
+    SRCPATH+"titan/include/",
 ]
 
 CXX = "gcc"

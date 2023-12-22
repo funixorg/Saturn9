@@ -31,9 +31,12 @@ void TERM_putchar(char character, unsigned color, unsigned scale) {
         ypos += 2;
         return;
     }
-
-    if (character == '\b') {
+    else if (character == '\b') {
         TERM_delete_last();
+        return;
+    }
+    else if (character== '\t') {
+        TERM_printstr("    ", color, scale);
         return;
     }
 

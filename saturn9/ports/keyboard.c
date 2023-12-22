@@ -56,6 +56,13 @@ void parse_key(uint8_t key, char layout[], char shift_layout[]) {
                 }
 
                 if (keyboard_info.buffer[keyboard_info.bindex] == '\b' && keyboard_info.bindex > 0) {
+                    if (keyboard_info.buffer[keyboard_info.bindex-1] == '\t') {
+                        keyboard_info.bindex--;
+                        for (unsigned _i=0; _i<4; _i++) {
+                            TERM_putchar(keyboard_info.key, TERM_get_foreground(), TERM_get_fontsize());
+                        }
+                        return;
+                    }
                     keyboard_info.bindex--;
                     TERM_putchar(keyboard_info.key, TERM_get_foreground(), TERM_get_fontsize());
                 }

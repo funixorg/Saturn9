@@ -8,6 +8,8 @@
 
 struct CommandEntry command_array[MAX_ENTRIES];
 
+Directory *current_dir;
+
 void SHELL_add_command(const char* command, void (*function)()) {
     size_t i;
     for (i = 0; i < MAX_ENTRIES; ++i) {
@@ -90,12 +92,13 @@ void SHELL_temp_lsdir(char **cmdnargs) {
     printf("%s   ", flist->paths[_i]);
   }
   for (unsigned _i=0; _i<flist->dir_count; _i++) {
-    printf("%s   ", flist->dirs[_i]);
+    printf("%s/   ", flist->dirs[_i]);
   }
   printf("\n");
 }
 
 void SHELL_shell_init() {
+  current_dir = VFS_find_dir("/");
   SHELL_add_command("clear", SHELL_temp_clear);
   SHELL_add_command("pan", SHELL_temp_cat);
   SHELL_add_command("ls", SHELL_temp_lsdir);

@@ -18,6 +18,8 @@
 #include <rhea.h>
 #include <initrd.h>
 #include <mimas.h>
+#include <titan.h>
+
 
 void _start(void) {
     sys_init_fpu();
@@ -94,13 +96,18 @@ void _start(void) {
     while (TERM_get_xpos()>0) { TERM_delete_last(); }
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}KEYBOARD\n");
 
+    printf("\n\n");
+
     //char *content = read_path("/commands/clear.re");
     /*FileList *files = list_dir("/");
     for (unsigned _i=0; _i<files->file_count; _i++) {
         printf_serial("PTH: %s\n", files->paths[_i]);
     }*/
     //File *file_handle = VFS_get_file("/img/saturn.mas");
-    //MIM_display_mimimg(file_handle, 250,250);
+    //MIM_display_mimimg(file_handle, 250,250, 1, 1);
+
+
+    test_titan();
 
     //if (content) { rhea_proc(content); }
     //else { printf_serial("FAIL!\n"); }

@@ -137,7 +137,7 @@ Directory *VFS_find_dir(char *dirname) {
     }
     else {
         if (dirname[0]!='/') { return NULL; }
-        char **tokens = strsplit(dirname, '/');
+        char **tokens = tok_split(dirname, '/');
         Directory *current_dir=&root_dir;
         for (unsigned _i=1; tokens[_i]; _i++) {
             if (strcmp(tokens[_i], "")) { continue;}

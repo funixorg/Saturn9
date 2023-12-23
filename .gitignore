@@ -1,6 +1,7 @@
 bin/
 isodir/
 scripts/__pycache__/
+titan/__pycache__/
 **/.vscode/
 .vscode/*
 !.vscode/settings.json

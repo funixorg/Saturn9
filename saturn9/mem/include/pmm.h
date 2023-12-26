@@ -3,7 +3,7 @@
 #ifndef PMM_H
 #define PMM_H
 
-#define STACK_SIZE 65536
+#define STACK_SIZE 8388608
 #define LIMINE_PAGING_MODE_X86_64_4LVL 0
 
 long long get_avaiable_mem();

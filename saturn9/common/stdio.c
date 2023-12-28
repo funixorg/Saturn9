@@ -9,9 +9,6 @@
 #include <pit.h>
 
 void printf(const char *format, ...) {
-    unsigned fg = TERM_get_foreground();
-    unsigned bg = TERM_get_background();
-
     va_list args;
     va_start(args, format);
 
@@ -85,10 +82,43 @@ void printf(const char *format, ...) {
                 cvalue[i] = '\0';
                 TERM_set_background(atoi(cvalue, 16));
             } else {
-                TERM_putchar('#', TERM_get_foreground(), TERM_get_fontsize());
+                TERM_putchar('$', TERM_get_foreground(), TERM_get_fontsize());
                 TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
             }
-        } else {
+        } 
+        else if (*format == '\\') {
+            format++;
+            if (*format == '@') {
+                format++;
+                if (*format == 'R') {
+                    format++;
+                    if (*format == 'E') {
+                        format++;
+                        if (*format == 'S') {
+                            TERM_set_foreground(TERM_get_default_fg());
+                            TERM_set_background(TERM_get_default_bg());
+                        }
+                        else {
+                            TERM_putchar('E', TERM_get_foreground(), TERM_get_fontsize());
+                            TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
+                        }
+                    }
+                    else {
+                        TERM_putchar('R', TERM_get_foreground(), TERM_get_fontsize());
+                        TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
+                    }
+                } 
+                else {
+                    TERM_putchar('@', TERM_get_foreground(), TERM_get_fontsize());
+                    TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
+                }
+            }
+            else {
+                TERM_putchar('\\', TERM_get_foreground(), TERM_get_fontsize());
+                TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
+            }
+        }
+        else {
             TERM_putchar(*format, TERM_get_foreground(), TERM_get_fontsize());
         }
 
@@ -96,9 +126,6 @@ void printf(const char *format, ...) {
     }
 
     va_end(args);
-
-    TERM_set_foreground(fg);
-    TERM_set_background(bg);
 }
 
 void printf_serial(const char *format, ...) {

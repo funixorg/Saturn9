@@ -16,12 +16,19 @@ unsigned TERM_get_foreground();
 void TERM_set_fontsize(unsigned value);
 unsigned TERM_get_fontsize();
 
+void TERM_set_default_fg(unsigned value);
+void TERM_set_default_bg(unsigned value);
+unsigned TERM_get_default_bg();
+unsigned TERM_get_default_fg();
+
+
 void TERM_printstr(const char* string, unsigned color, unsigned scale);
 
 unsigned TERM_get_xpos();
 unsigned TERM_get_ypos();
 void TERM_set_xpos(unsigned value);
 void TERM_set_ypos(unsigned value);
+
 
 void TERM_draw_bar();
 void TERM_scroll_up();

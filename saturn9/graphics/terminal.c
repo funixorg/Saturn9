@@ -6,6 +6,9 @@ unsigned background;
 unsigned foreground;
 unsigned font_size;
 
+unsigned default_bg;
+unsigned default_fg;
+
 unsigned xpos=0;
 unsigned ypos=0;
 
@@ -79,6 +82,8 @@ void TERM_delete_cursor() {
     xpos--;
 }
 
+
+
 void TERM_set_background(unsigned value) {
     background=value;
 }
@@ -103,6 +108,23 @@ unsigned TERM_get_fontsize() {
     return font_size;
 }
 
+void TERM_set_default_fg(unsigned value) {
+    default_fg = value;
+    TERM_set_foreground(default_fg);
+}
+
+void TERM_set_default_bg(unsigned value) {
+    default_bg = value;
+    TERM_set_background(default_bg);
+}
+
+unsigned TERM_get_default_bg() {
+    return default_bg;
+}
+
+unsigned TERM_get_default_fg() {
+    return default_fg;
+}
 
 void TERM_printstr(const char* string, unsigned color, unsigned scale) {
     unsigned i=0;

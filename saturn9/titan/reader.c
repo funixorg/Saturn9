@@ -7,11 +7,12 @@
 
 // ----- Defining here as i won't create a datatypes.c file
 
-DataType TYPE_INT32 = {sizeof(uint32_t), 0};
-DataType TYPE_INT8 = {sizeof(uint8_t), 1};
-DataType TYPE_POINTER = {sizeof(uint64_t), 2};
-DataType TYPE_REGISTER = {sizeof(short), 3};
-DataType TYPE_IDENTIFIER = {sizeof(char*), 4};
+DataType TYPE_INT32      = {sizeof(uint32_t), 0};
+DataType TYPE_INT8       = {sizeof(uint8_t),  1};
+DataType TYPE_POINTER    = {sizeof(uint64_t), 2};
+DataType TYPE_REGISTER   = {sizeof(short),    3};
+DataType TYPE_IDENTIFIER = {sizeof(char*),    4};
+DataType TYPE_STRING     = {sizeof(char*),    5};
 
 // -----
 

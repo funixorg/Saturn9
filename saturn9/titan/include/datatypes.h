@@ -28,5 +28,6 @@ extern DataType TYPE_INT8;
 extern DataType TYPE_POINTER;
 extern DataType TYPE_REGISTER;
 extern DataType TYPE_IDENTIFIER;
+extern DataType TYPE_STRING;
 
 #endif

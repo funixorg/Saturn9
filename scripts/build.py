@@ -1,7 +1,12 @@
-from os import walk as _walk, system as _sys, name as _osname, popen as _popen
+import sys
+from os import walk as _walk, system as _sys, name as _osname, popen as _popen, path as _path
 from configuration import *
 import ramfs
 import font
+
+sys.path.append(_path.abspath(__file__ + "/../../"))
+print(sys.path[-1])
+import titan
 
 
 def src_obj(path:str=SRCPATH, ext:str=".c", exclude:list[str]=[SRCPATH+"limine"])->list[(str, str)]:
@@ -61,6 +66,7 @@ def build()->int:
     tlines = line_counter()
     print(f"TOTAL OF: {tlines} LINES !!");
     
+    titan.titan_gen()
     fonts()
     setup()
     

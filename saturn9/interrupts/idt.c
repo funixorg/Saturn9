@@ -27,3 +27,8 @@ void idt_init() {
 
     load_idt((uint64_t)&idt_p);
 }
+
+
+idt_entry_t *get_idt() {
+    return idt;
+}

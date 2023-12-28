@@ -22,5 +22,6 @@ void load_idt(uint64_t);
 void trigger_interupt(uint64_t a);
 void set_idt_gate(int num, uint64_t base, uint16_t sel, uint8_t flags);
 void idt_init();
+idt_entry_t *get_idt();
 
 #endif /* IDT_H */

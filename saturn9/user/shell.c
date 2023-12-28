@@ -1,10 +1,12 @@
 #include <shell.h>
 #include <stdio.h>
+#include <terminal.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <filesystem.h>
 #include <idt.h>
 #include <mem.h>
+#include <titan.h>
 
 struct CommandEntry command_array[MAX_ENTRIES];
 
@@ -97,12 +99,35 @@ void SHELL_temp_lsdir(char **cmdnargs) {
   printf("\n");
 }
 
+void SHELL_run_exec(char **cargs) {
+  char *base_path = format("/sys/bin/%s", cargs[0]);
+  TITAN_run_exe(base_path);
+}
+
+void SHELL_init_bin() {
+  Directory *root = VFS_find_dir("/");
+  for (unsigned _i=0; _i<root->dir_count;_i++) {
+    if (strcmp(root->directories[_i].path, "sys")) {
+      for (unsigned _j=0; _j<root->directories[_i].dir_count;_j++) {
+        if (strcmp(root->directories[_i].directories[_j].path, "bin")) {
+          for (unsigned _k=0;_k<root->directories[_i].directories[_j].file_count; _k++) {
+            File bin = root->directories[_i].directories[_j].files[_k];
+            SHELL_add_command(bin.path, SHELL_run_exec);
+          }
+        }
+      }
+    }
+  }
+}
+
 void SHELL_shell_init() {
   current_dir = VFS_find_dir("/");
-  SHELL_add_command("clear", SHELL_temp_clear);
+  SHELL_init_bin();
   SHELL_add_command("pan", SHELL_temp_cat);
   SHELL_add_command("ls", SHELL_temp_lsdir);
   for (;;) {
     SHELL_shellrun();
+    TERM_set_foreground(TERM_get_default_fg());
+    TERM_set_background(TERM_get_default_bg());
   }
 }

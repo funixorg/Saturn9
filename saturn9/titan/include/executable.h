@@ -33,9 +33,9 @@ typedef struct Function {
 } Function;
 
 typedef struct Executable {
-    Constant *dcb;
-    Variable *data;
-    Function *text;
+    Constant **dcb;
+    Variable **data;
+    Function **text;
     uint32_t dcb_size;
     uint32_t data_size;
     uint32_t text_size;

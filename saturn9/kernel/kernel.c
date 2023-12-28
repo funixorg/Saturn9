@@ -27,8 +27,8 @@ void _start(void) {
     GP_framebuffer_init();
     serial_init();
 
-    TERM_set_background(0x0e0e0e);
-    TERM_set_foreground(0x6d6d6d);
+    TERM_set_default_bg(0x0e0e0e);
+    TERM_set_default_fg(0x6d6d6d);
     TERM_set_fontsize(1);
     GP_draw_screen(TERM_get_background());
 
@@ -76,9 +76,9 @@ void _start(void) {
     while (TERM_get_xpos()>0) { TERM_delete_last(); }
     printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}%d CPUs\n", get_cpu_count());
 
-    printf("[...] #{0xffc0cb}BOOT_TIME");
-    while (TERM_get_xpos()>0) { TERM_delete_last(); }
-    printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}BOOT_TIME %s\n", unix_to_time(get_boot_time()));
+    //printf("[...] #{0xffc0cb}BOOT_TIME");
+    //while (TERM_get_xpos()>0) { TERM_delete_last(); }
+    //printf("[#{0x00ff00}OK#{0x6d6d6d}] #{0xffc0cb}BOOT_TIME %s\n", unix_to_time(get_boot_time()));
 
     printf("[...] #{0xffc0cb}KERNEL_ADDR");
     while (TERM_get_xpos()>0) { TERM_delete_last(); }
@@ -106,8 +106,6 @@ void _start(void) {
     //File *file_handle = VFS_get_file("/img/saturn.mas");
     //MIM_display_mimimg(file_handle, 250,250, 1, 1);
 
-
-    test_titan();
 
     //if (content) { rhea_proc(content); }
     //else { printf_serial("FAIL!\n"); }

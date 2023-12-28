@@ -18,8 +18,10 @@
 #define INS_MUL  0x07
 #define INS_DIV  0x08
 
+#define INS_INT  0x09
 
-#define REG_RAX  = 0x00
+
+#define REG_RAX 0x00
 #define REG_RCX 0x01
 #define REG_RDX 0x02
 

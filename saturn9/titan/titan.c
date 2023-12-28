@@ -46,12 +46,21 @@ Value *TITAN_process_value() {
         }
         case 4: {
             data_type = &TYPE_IDENTIFIER;
-            unsigned str_size = TITAN_read_uint8(4);
+            unsigned str_size = TITAN_read_short();
             char *identifier = TITAN_read_string(str_size);
             value->type=data_type;
             value->u32_value=0;
             value->str_value=identifier;
             break;
+        case 5: {
+            data_type = &TYPE_STRING;
+            unsigned str_size = TITAN_read_short();
+            char *strvalue = TITAN_read_string(str_size);
+            value->type=data_type;
+            value->u32_value=0;
+            value->str_value=strvalue;
+            break;
+        }
         }
         default: {
             data_type = &TYPE_INT32;
@@ -70,7 +79,11 @@ void TITAN_read_dcb() {
         str_size = TITAN_read_short();
         char *name = TITAN_read_string(str_size);
         Value *value = TITAN_process_value();
-        executable->dcb[_i] = (Constant){name, value, executable->address};
+        Constant *constv = memalloc(sizeof(Constant));
+        constv->name = name;
+        constv->value = value;
+        constv->address =executable->address;
+        executable->dcb[_i] = constv;
         executable->address++;
     }
 }
@@ -86,7 +99,12 @@ void TITAN_read_data() {
         str_value = value->str_value;
         value->str_value = str_value;
 
-        executable->data[_i] = (Variable){name, value, executable->address};
+        Variable *varv = memalloc(sizeof(Variable));
+        varv->name = name;
+        varv->value = value;
+        varv->address = executable->address;
+
+        executable->data[_i] = varv;
         executable->address++;
     }
 }
@@ -110,6 +128,7 @@ Operation *TITAN_read_instruction() {
         operation->target = TITAN_process_value();
     }
     else if (operation->opcode == INS_RET) {}
+    else if (operation->opcode == INS_INT) {}
     else {
         // This fucking code is held together with duct tape but turning everything
         // to little-endian fixed a lot of things
@@ -138,14 +157,21 @@ void TITAN_read_text() {
             parameters[_k] = TITAN_read_string(psize);
         }
 
-        // Debugging output
         Operation **fn_body = memalloc(sizeof(Operation)*ninstrs);
 
         for (unsigned _j=0; _j<ninstrs; _j++) {
             fn_body[_j] = TITAN_read_instruction();
         }
 
-        executable->text[_i] = (Function){name, parameters, fn_body, ninstrs, nparams, executable->address};
+        Function *funcv = memalloc(sizeof(Function));
+        funcv->name=name;
+        funcv->parameters=parameters;
+        funcv->body=fn_body;
+        funcv->nops=ninstrs;
+        funcv->nparms=nparams;
+        funcv->address=executable->address;
+
+        executable->text[_i] = funcv;
         executable->address++;
     }
 }
@@ -162,9 +188,9 @@ unsigned TITAN_exe_interpreter(File *source) {
     unsigned text_size = TITAN_read_uint32(4);
 
     executable = memalloc(sizeof(Executable));
-    executable->dcb = memalloc(sizeof(Constant) * dcb_size);
-    executable->data = memalloc(sizeof(Variable) * data_size);
-    executable->text = memalloc(sizeof(Function) * text_size);
+    executable->dcb = memalloc(sizeof(Constant*) * dcb_size);
+    executable->data = memalloc(sizeof(Variable*) * data_size);
+    executable->text = memalloc(sizeof(Function*) * text_size);
     executable->dcb_size = dcb_size;
     executable->data_size = data_size;
     executable->text_size = text_size;
@@ -174,17 +200,17 @@ unsigned TITAN_exe_interpreter(File *source) {
     TITAN_read_data();
     TITAN_read_text();
 
-    for (unsigned _i=0; _i<dcb_size; _i++) {
-        printf_serial("DCB: %s [%x] = %x\n", executable->dcb[_i].name, executable->dcb[_i].address, executable->dcb[_i].value->u32_value);
+    /*for (unsigned _i=0; _i<dcb_size; _i++) {
+        printf_serial("DCB: %s [%x] = %x\n", executable->dcb[_i]->name, executable->dcb[_i]->address, executable->dcb[_i]->value->u32_value);
     }
 
     for (unsigned _i=0; _i<data_size; _i++) {
-        printf_serial("DATA: %s [%x] = %x\n", executable->data[_i].name, executable->data[_i].address, executable->data[_i].value->u32_value);
-    }
+        printf_serial("DATA: %s [%x] = %x\n", executable->data[_i]->name, executable->data[_i]->address, executable->data[_i]->value->u32_value);
+    }*/
 
     return VM_run_executable(executable);
 }
 
-void test_titan() {
-    TITAN_exe_interpreter(VFS_get_file("/sys/bin/testbin"));
+void TITAN_run_exe(char *path) {
+    TITAN_exe_interpreter(VFS_get_file(path));
 }

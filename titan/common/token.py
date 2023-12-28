@@ -13,6 +13,11 @@ class TokenType:
     DOLLAR      = 8
     COMMA       = 9
     COLON       = 10
+    EQUAL       = 11
+    
+    KEYWORD     = 12
+    REGISTER    = 13
+    VARIABLE    = 14
 
 
 class Token():

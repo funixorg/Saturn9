@@ -2,12 +2,12 @@
     [define] magic 0xF1A
 
 [section] data:
-    u32 offset 0x00
+    i32 offset = 0x00
 
 [section] text:
     - add:
-        + u32 a
-        + u32 b
+        + i32 a
+        + i32 b
 
         mov %rax, $a
         mov %rcx, $b
@@ -25,6 +25,5 @@
         mov %rbx, %rcx
         int
 
-        mov %rax, 0x91
-        mov %rbx, "Hello"
+        mov %rbx, "\nHello\n"
         int

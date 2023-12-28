@@ -1,4 +1,4 @@
-from .token import *
+from ..common.token import *
 import string
 
 SYMBOLS_MAP = [
@@ -9,7 +9,8 @@ SYMBOLS_MAP = [
     ("+", TokenType.PLUS),
     ("%", TokenType.MOD),
     ("$", TokenType.DOLLAR),
-    (":", TokenType.COLON)
+    (":", TokenType.COLON),
+    ("=", TokenType.EQUAL)
 ]
 
 
@@ -57,6 +58,12 @@ class Lexer():
             token = self.process_identifier()
         elif self.c_char == '"':
             token = self.process_string()
+        elif self.c_char == "[":
+            token = self.process_keyword()
+        elif self.c_char == '%':
+            token = self.process_register()
+        elif self.c_char == '$':
+            token = self.process_variable()
         elif Utils.ret_symbol(self.c_char):
             token = self.process_symbol()
         elif self.c_char == " ":
@@ -99,20 +106,46 @@ class Lexer():
             t_value += self.c_char
             self.advance()
         self.advance()
-        return Token(t_type, str(t_value))
+        return Token(t_type, str(t_value).replace("\\n", "\n"))
 
     def process_symbol(self)->Token:
         t_value = self.c_char
         t_type = Utils.ret_symbol(self.c_char)
         self.advance()
         return Token(t_type, str(t_value))
+
+    def process_keyword(self)->Token:
+        t_value = ""
+        t_type = TokenType.KEYWORD
+        self.advance()
+        while (self.c_char != ']' and self.c_pos < self.s_size):
+            t_value += self.c_char
+            self.advance()
+        self.advance()
+        return Token(t_type, str(t_value))
+
+    def process_register(self)->Token:
+        t_value = ""
+        t_type = TokenType.REGISTER
+        self.advance()
+        while (self.c_char.isalnum() and self.c_pos < self.s_size):
+            t_value += self.c_char
+            self.advance()
+        
+        return Token(t_type, str(t_value))
+
+    def process_variable(self)->Token:
+        t_value = ""
+        t_type = TokenType.VARIABLE
+        self.advance()
+        while (self.c_char.isalnum() and self.c_pos < self.s_size):
+            t_value += self.c_char
+            self.advance()
+        
+        return Token(t_type, str(t_value))
         
 
 def lexerize(path:str):
     source = open(path, "r").read()
     lexer  = Lexer(source)
-    tokens = lexer.process_source()
-    
-    for tok in tokens:
-        #print(tok.value, tok.type)
-        pass
+    return lexer.process_source()

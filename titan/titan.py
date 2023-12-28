@@ -87,8 +87,16 @@ def titan_gen():
     mcWriter(clear_prog, "initramdir/sys/bin/clear")
 """
 from .lexer import *
+from .parser import *
+from .compiler import *
+
+def compile_tas(path:str, output:str):
+    tokens = lexerize(path)
+    execv  = parser_conv(tokens)
+    mcWriter(execv, output)
 
 def titan_gen():
-    lexerize("titan/sysp/test.tas")
+    compile_tas("titan/sysp/test.tas", "initramdir/sys/bin/testbin")
+    compile_tas("titan/sysp/clear.tas", "initramdir/sys/bin/clear")
     
 if __name__ == "__main__": titan_gen()

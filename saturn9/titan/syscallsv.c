@@ -33,7 +33,6 @@ void VM_sysc_readline() {
 
 void VM_run_syscall(VM_Register *registers) {
     uint32_t raxval = VM_read_reg(REG_RAX)->u32_value;
-    
     switch (raxval) {
         case SYSC_CLEAR: {
             VM_sysc_clear();

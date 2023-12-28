@@ -1,4 +1,5 @@
 bin/
+!initramdir/sys/bin/
 isodir/
 scripts/__pycache__/
 titan/__pycache__/

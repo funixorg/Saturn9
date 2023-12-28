@@ -1,0 +1,30 @@
+[section] dcb:
+    [define] magic 0xF1A
+
+[section] data:
+    u32 offset 0x00
+
+[section] text:
+    - add:
+        + u32 a
+        + u32 b
+
+        mov %rax, $a
+        mov %rcx, $b
+        add %rax, %rcx 
+        ret
+    
+    - main:
+        push 2
+        push 5
+        call add
+
+        mov %rcx, %rax
+
+        mov %rax, 0x91
+        mov %rbx, %rcx
+        int
+
+        mov %rax, 0x91
+        mov %rbx, "Hello"
+        int

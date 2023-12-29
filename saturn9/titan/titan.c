@@ -176,7 +176,7 @@ void TITAN_read_text() {
     }
 }
 
-unsigned TITAN_exe_interpreter(File *source) {
+unsigned TITAN_exe_interpreter(File *source, char **args) {
     TITAN_reset_pos();
     TITAN_set_file(source);
 
@@ -207,10 +207,33 @@ unsigned TITAN_exe_interpreter(File *source) {
     for (unsigned _i=0; _i<data_size; _i++) {
         printf_serial("DATA: %s [%x] = %x\n", executable->data[_i]->name, executable->data[_i]->address, executable->data[_i]->value->u32_value);
     }*/
+    if (args) {
+        VM_FnParam **params = memalloc(sizeof(VM_FnParam)*1);
 
-    return VM_run_executable(executable);
+        for (int _i = 0; _i < 1; _i++) {
+            params[_i] = memalloc(sizeof(VM_FnParam));
+            params[_i]->val = memalloc(sizeof(Value));
+        }
+
+        params[0]->val->type = &TYPE_STRING;
+        params[0]->val->u32_value = 0;
+        params[0]->val->str_value = args[0];
+
+        unsigned result = VM_run_executable(executable, params);
+
+        for (unsigned _i = 0; _i < 1; _i++) {
+            free(params[_i]->val);
+            free(params[_i]);
+        }
+        free(params);
+
+        return result;
+    }
+    else {
+        return VM_run_executable(executable, NULL);
+    }
 }
 
-void TITAN_run_exe(char *path) {
-    TITAN_exe_interpreter(VFS_get_file(path));
+void TITAN_run_exe(char *path, char **args) {
+    TITAN_exe_interpreter(VFS_get_file(path), args);
 }

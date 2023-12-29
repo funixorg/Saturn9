@@ -264,7 +264,7 @@ void VM_init_regs() {
     }
 }
 
-unsigned VM_run_executable(Executable *exec) {
+unsigned VM_run_executable(Executable *exec, VM_FnParam **args) {
     vm_env = (VMEnv*)memalloc(sizeof(VMEnv));
     vm_env->registers = memalloc(sizeof(VM_Register)*16); // 16 registers
     vm_env->parameters = memalloc(sizeof(VM_FnParam)*8); // 8 Max Parameters
@@ -275,7 +275,12 @@ unsigned VM_run_executable(Executable *exec) {
     if (!main_fn) {
         return 3; // Missing entry_point
     }
-    VM_run_func(main_fn, NULL);
+    if (args) {
+        VM_run_func(main_fn, args);
+    }
+    else {
+        VM_run_func(main_fn, NULL);
+    }
 
     return 0;
 }

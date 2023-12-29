@@ -1,0 +1,13 @@
+[section] text:
+    - main:
+        + str fpath
+        mov %rax, 0x93
+        mov %rbx, $fpath
+        int
+
+        mov %rax, 0x91
+        mov %rbx, %rsi
+        int
+        
+        mov %rbx, "\n"
+        int

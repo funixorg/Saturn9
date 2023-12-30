@@ -9,6 +9,7 @@ RegNames = {
     "RBP": Registers.RBP,
     "RSI": Registers.RSI,
     "R8" : Registers.R8,
+    "R9" : Registers.R9,
     "R10": Registers.R10,
     "R11": Registers.R11,
     "R12": Registers.R12,

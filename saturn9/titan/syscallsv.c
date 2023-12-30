@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <mem.h>
 #include <filesystem.h>
+#include <graphics.h>
 
 void VM_sysc_clear() {
     clear_screen();
@@ -33,7 +34,6 @@ void VM_sysc_readline() {
 }
 
 void VM_sysc_readfile() {
-    printf_serial("HERE\n");
     Value *rbxval = VM_read_reg(REG_RBX);
     Value *rsival = VM_read_reg(REG_RSI);
     if (rbxval->str_value) {
@@ -45,7 +45,27 @@ void VM_sysc_readfile() {
         }
     }
     else {
-        rsival->str_value = " ";
+        rsival->str_value = "\\b";
+    }
+}
+
+void VM_sysc_putpixel() {
+    Value *r8val = VM_read_reg(REG_R8);
+    Value *r9val = VM_read_reg(REG_R9);
+    Value *rbpval = VM_read_reg(REG_RBP);
+    if (r8val->u32_value && r9val->u32_value && rbpval->u32_value) {
+        GP_draw_pixel(r8val->u32_value, r9val->u32_value, rbpval->u32_value);
+    }
+}
+
+void VM_sysc_drawrect() {
+    Value *r8val = VM_read_reg(REG_R8); // x
+    Value *r9val = VM_read_reg(REG_R9); // y
+    Value *r10val = VM_read_reg(REG_R10); // width
+    Value *r11val = VM_read_reg(REG_R11); // height
+    Value *rbpval = VM_read_reg(REG_RBP); // color
+    if (r8val->u32_value && r9val->u32_value && r10val->u32_value && r11val->u32_value &&rbpval->u32_value) {
+        GP_draw_rectangle(r8val->u32_value, r9val->u32_value,r10val->u32_value, r11val->u32_value, rbpval->u32_value);
     }
 }
 
@@ -66,6 +86,14 @@ void VM_run_syscall(VM_Register *registers) {
         }
         case SYSC_READFILE: {
             VM_sysc_readfile();
+            break;
+        }
+        case SYSC_PUTPIXEL: {
+            VM_sysc_putpixel();
+            break;
+        }
+        case SYSC_DRAWRECT: {
+            VM_sysc_drawrect();
             break;
         }
     }

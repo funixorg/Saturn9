@@ -66,6 +66,8 @@ class Lexer():
             token = self.process_variable()
         elif Utils.ret_symbol(self.c_char):
             token = self.process_symbol()
+        elif self.c_char == ';':
+            self.skip_comment()
         elif self.c_char == " ":
             self.advance()
         elif self.c_char == "\n":
@@ -76,7 +78,11 @@ class Lexer():
             raise Exception(f"Unknown character type: {repr(self.c_char)}")
         
         return token
-            
+        
+    def skip_comment(self)->None:
+        while (self.c_char != '\n'):
+            self.advance()
+    
     def process_integer(self)->Token:
         t_value = ""
         t_type  = TokenType.INTEGER

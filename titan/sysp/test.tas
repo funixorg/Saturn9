@@ -1,29 +1,44 @@
 [section] dcb:
-    [define] magic 0xF1A
+    [define] magic 0xF1A  ; costante
 
 [section] data:
-    i32 offset = 0x00
+    i32 offset = 0x00 ; variabile
 
-[section] text:
-    - add:
-        + i32 a
-        + i32 b
+[section] text: 
+    - add: ; funzione 
+        + i32 a ; argument 1
+        + i32 b ; argument 2
 
-        mov %rax, $a
-        mov %rcx, $b
-        add %rax, %rcx 
-        ret
+        mov %rax, $a ; muove arg 1 in rax
+        mov %rcx, $b ; muove arg 2 in rcx
+        add %rax, %rcx ; somma rax e rcx, la somma si trova in rax
+        ret ; serve a dire che la funzione e' finita
     
     - main:
-        push 2
-        push 5
-        call add
+        push 2 ; primo argomento della funzione
+        push 5 ; secondo argomento
+        call add ; chiama funzione
 
-        mov %rcx, %rax
+        mov %rcx, %rax ; sposta la somma da rax a rcx
 
-        mov %rax, 0x91
-        mov %rbx, %rcx
+        mov %rax, 0x91 ; muove la syscall 0x91 (print) in rax
+        mov %rbx, %rcx ; muove la somma in rbx (argument del print)
+        int ; chiama syscall
+
+        mov %rbx, "\nHello\n" ; muove stringa in rbx (argument del print)
+        int ; chiama syscall
+
+        mov %rax, 0x94 ; muove syscall 0x94 (putpixel) in rax
+        mov %r8, 10   ; muove 40 in r8, x=40
+        mov %r9, 10   ; muove 90 in r9, y=90
+        mov %rbp, 0xff0000   ; muove #ff0000 (rosso) in rbp
         int
 
-        mov %rbx, "\nHello\n"
+
+        mov %rax, 0x95 ; muove syscall 0x95 (drawrect) in rax
+        mov %r8, 40   ; muove 40 in r8, x=40
+        mov %r9, 90   ; muove 90 in r9, y=90
+        mov %r10, 120  ; muove 120 in r10, w=120
+        mov %r11, 64   ; muove 64 in r11, h=64
+        mov %rbp, 0xff0000   ; muove #ff0000 (rosso) in rbp
         int

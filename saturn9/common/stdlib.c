@@ -263,13 +263,19 @@ int strcmp(const char* s1, const char* s2) {
 }
 
 char *strncat (char *s1, const char *s2, size_t n) {
-  char *s = s1;
-  /* Find the end of S1.  */
-  s1 += strlen (s1);
-  size_t ss = strlen (s2);
-  s1[ss] = '\0';
-  memcpy (s1, s2, ss);
-  return s;
+    size_t s1size = strlen(s1);
+    char *s = memalloc(sizeof(char)*(strlen(s1) + n + 1));
+
+    for (unsigned _i=0;_i<s1size;_i++) {
+        s[_i] = s1[_i];
+    }
+    
+    for (unsigned _j=0;_j<n;_j++) {
+        s[s1size+_j] = s2[_j];
+    }
+    s[s1size+n]='\0';
+    s1 = s;
+    return s;
 }
 
 char* unix_to_time(uint32_t unix_time) {

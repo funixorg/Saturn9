@@ -47,7 +47,7 @@ void SHELL_shellrun() {
   if (!prompt) {
   }
   printf(prompt, "unity", "/");
-  char *line=readline();
+  char *line = readline();
   if (strlen(line)>0) {
     char** tokens =tok_split(line,' ');
     SHELL_execvp(tokens);
@@ -100,7 +100,8 @@ void SHELL_temp_lsdir(char **cmdnargs) {
 }
 
 void SHELL_run_exec(char **cargs) {
-  char *base_path = format("/sys/bin/%s", cargs[0]);
+  char *base_path = "/sys/bin/";
+  base_path = strncat(base_path, cargs[0], strlen(cargs[0]));
   char **args = memalloc(sizeof(char)*32);
   if (cargs[1]) {
     args[0] = cargs[1];

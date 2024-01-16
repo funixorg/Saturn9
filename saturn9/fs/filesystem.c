@@ -101,14 +101,14 @@ unsigned FS_get_hsize() {
 char *VFS_read_chunk(File *file) {
     if (!file->base_size.size) { return ""; }
     unsigned base = file->base_size.base+rdinfo.header_size;
-    unsigned size = file->base_size.size-1; // Size-1 = index
+    unsigned size = file->base_size.size;
 
-    char *buffer=memalloc(size);
+    char *buffer=memalloc(sizeof(char)*size);
 
     for (unsigned _i=0; _i<=size; _i++) {
         buffer[_i]=read_rd_c(rdinfo.address, base+_i);
     }
-
+    buffer[size]='\0';
     return buffer;
 }
 
@@ -259,6 +259,13 @@ char *VFS_read_path(char *full_path) {
     }
 
     File *file_handle = VFS_find_file(current_dir, file);
-    if (file_handle) { return VFS_read_chunk(file_handle); }
+    if (file_handle) {
+        free(tokens);
+        free(file);
+        return VFS_read_chunk(file_handle);
+    }
+    free(tokens);
+    free(file);
+    free(file_handle);
     return NULL;
 }

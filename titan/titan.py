@@ -1,15 +1,19 @@
-from .lexer import *
-from .parser import *
-from .compiler import *
+from assembler import tasm
 
-def compile_tas(path:str, output:str):
-    tokens = lexerize(path)
-    execv  = parser_conv(tokens)
-    mcWriter(execv, output)
 
-def titan_gen():
-    compile_tas("titan/sysp/test.tas", "initramdir/sys/bin/testbin")
-    compile_tas("titan/sysp/clear.tas", "initramdir/sys/bin/clear")
-    compile_tas("titan/sysp/pan.tas", "initramdir/sys/bin/pan")
-    
-if __name__ == "__main__": titan_gen()
+def test():
+    header         = tasm.Header()
+    header.arch    = tasm.Definition.Architecture.x86_64
+    header.version = tasm.Definition.Version.current
+    header.order   = tasm.Definition.Order.little
+    header.entry   = 0x00
+    header.phoff   = tasm.Header.__sizeof__()
+    header.shoff   = tasm.Header.__sizeof__()+tasm.ProgramHeader.__sizeof__()
+
+
+    wr             = tasm.Writer()
+    wr.name        = "testexec"
+    wr.header      = header
+
+
+test()

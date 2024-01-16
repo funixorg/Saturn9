@@ -1,4 +1,0 @@
-[section] text:
-    - main:
-        mov %rax, 0x90
-        int
